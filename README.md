@@ -10,9 +10,10 @@ This repository includes a variety of projects from my internships. Each project
 - **Objectives**: The main objectives and tasks completed during the project.
 - **Implementation Details**: Technical details and methodologies used.
 - **Progress Updates**: Documentation of milestones and progress throughout the project.
+- UML
 
 ## Contact
-For any inquiries or feedback, please reach out to me at [your email].
+For any inquiries or feedback, please reach out to me at ayoubmajid71@gmail.com.
 
 ## Tags
 `#Internship` `#Projects` `#TechInnovation`
