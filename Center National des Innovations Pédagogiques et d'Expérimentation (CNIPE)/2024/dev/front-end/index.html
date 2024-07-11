@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Home</title>
+		<link rel="shortcut icon" href="imgs/logo.jpg" type="image/x-icon">
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/index.css" />
+
+		<!-- font awesome -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	</head>
+	<body>
+		<header>
+			<div class="logoContainer">
+				<img src="imgs/logo.jpg" class="logo" alt="landing page logo" />
+				<img src="imgs/logoAr.jpg" class="logoAr" alt="landing page logo" />
+			</div>
+
+			<ul>
+				<li class="currentPage"><a href="#" >Home</a></li>
+				<li><a href="EspaceFormation.html">Espace formation</a></li>
+				<li><a href="aide.html">Aide</a></li>
+
+				<div class="loginContainer">
+					<button id="login">Login</button>
+				</div>
+			</ul>
+			<i class="fa-solid fa-bars" id="toogleMenu"></i>
+		</header>
+
+		<section class="mainContent">
+			<div class="videoContainer">
+				<video src="videos/landingVideo.mp4" autoplay loop muted></video>
+			</div>
+			<div class="textContent">
+				<h1>Bienvenue sur la Plateforme des Formations Professionnel DMAU</h1>
+				<h4>Le dispositif DMAU assure la pérennisation du développement professionnel des acteurs de l'éducation</h4>
+
+				<button id="EspaceFormationBtn">Cliquez pour acceder a l'espace formation</button>
+			</div>
+		</section>
+
+		<!-- About Section -->
+		<section id="about-us">
+			<div class="mainTitle">About us</div>
+			<figure>
+				<h4>Le Centre National pour l'Innovation Pédagogique et l'Expérimentation a pour missions de :</h4>
+				<ul>
+					<li>Encourager et développer des programmes de coopération technologique avec les entreprises;</li>
+					<li>Encourager les projets d'amélioration des moyens didactiques, de leur développement et de leur maintenance;</li>
+					<li>Expérimenter des programmes et des méthodes d'enseignement et de formation;</li>
+					<li>Superviser la recherche et la documentation pédagogique et en assurer la diffusion;</li>
+					<li>Promouvoir les technologies éducatives, les ressources multimédias et les techniques de communication;</li>
+					<li>Développer et expérimenter des techniques d'information et d'orientation scolaire et professionnelle;</li>
+					<li>Préparer des projets de formation à distance utilisant les nouvelles technologies de communication.</li>
+				</ul>
+			</figure>
+			<figure>
+				<h4>				Le Centre National pour l'Innovation Pédagogique et l'Expérimentation est composé de :</h4>
+
+				<ul>
+					<li>Département de promotion des technologies éducatives, des ressources multimédias et des techniques de communication;</li>
+					<li>Département de la recherche, des archives et de la diffusion des documents pédagogiques;</li>
+					<li>Département de l'enseignement à distance;</li>
+					<li class="currentDep">Département des moyens audiovisuels.</li>
+				</ul>
+			</figure>
+		</section>
+
+		<section id="statistiques">
+			<div class="mainTitle">Statistiques</div>
+			<div class="container">
+				<div class="card">
+					<img src="imgs/teacher.png" alt="teacher img" />
+					<p><strong>36</strong> <br />Tuteurs</p>
+				</div>
+				<div class="card">
+					<img src="imgs/users.png" alt="users img" />
+					<p>
+						<strong>26000</strong> <br />
+						Utilisateurs
+					</p>
+				</div>
+				<div class="card">
+					<img src="imgs/mooc.png" alt="Mooc img" />
+					<p>
+						<strong>75</strong> <br />
+						Nombre de MOOC
+					</p>
+				</div>
+				<div class="card">
+					<img src="imgs/videos.png" alt="videos img" />
+					<p>
+						<strong>600</strong> <br />
+						Nombre de vidéos
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Footer Section -->
+		<footer>
+			<div class="footerContainer">
+				<div class="footerContent">
+					<div class="footerColumn">
+						<h4>Sites importants</h4>
+						<ul>
+							<li>Ministère de l'Éducation Nationale, du Préscolaire & des Sports</li>
+							<li>Taalim Tice</li>
+							<li>div.ead@men.gov.ma</li>
+							<li>Guides</li>
+						</ul>
+					</div>
+					<div class="footerColumn">
+						<h4>Catégorie cible</h4>
+						<ul>
+							<li>Enseignants</li>
+							<li>Inspecteurs</li>
+							<li>Cadre de l'administration pédagogique</li>
+						</ul>
+					</div>
+					<div class="footerColumn">
+						<h4>Nos partenaires</h4>
+						<ul>
+							<li>Direction du Système d'Information</li>
+							<li>Unité Centrale de la Formation des Cadres</li>
+							<li>Centres Régionaux des Métiers de l'Éducation et de la Formation</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		<script src="js/script.js"></script>
+	</body>
+</html>
