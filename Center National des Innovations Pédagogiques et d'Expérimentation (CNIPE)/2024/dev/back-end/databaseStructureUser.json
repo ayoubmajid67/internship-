@@ -1,0 +1,28 @@
+
+[
+
+	{
+		"username": "",
+		"email": "",
+		"password": "",
+		"accountType": "",
+		"profileImg": "",
+		"numSome": "",
+		"workPlace": "",
+		"currentJob": "",
+		"status": "active" ,
+		"enrolledCourses": [
+		  {
+			"courseId": "",
+			"courseName": "",
+			"courseCategory": "",
+			"courseReview": "",
+			"userReview": ""
+		  }
+	
+	
+		]
+	  }
+	  
+
+]

@@ -1,0 +1,24 @@
+{
+    "categoryName": "",
+    "createdDate": "",
+    "courses": [
+      {
+        "courseName": "",
+        "createdDate": "",
+        "description":"",
+        "review":"",
+        "courseContent": [
+          {
+            "videoLink": "",
+            "thumbnail":"",
+            "addedDate": "",
+            "duration": "",
+            "nbrOfLikes": 0,
+            "title": "",
+            "description": ""
+          }
+        ]
+      }
+    ]
+  }
+  
