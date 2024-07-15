@@ -140,7 +140,9 @@ def login():
         return jsonify({'error': 'Invalid credentials'}), 401
 
     token = utile.generate_token(email)
-    return jsonify({'message': "User login successfully", 'token': token})
+    username=user["username"]
+    profileImg=user["profileImg"]
+    return jsonify({'message': "User login successfully", 'token': token,'username':username,'profileImg':profileImg})
 
 
 @bp.route('/dropUser', methods=['DELETE'])
