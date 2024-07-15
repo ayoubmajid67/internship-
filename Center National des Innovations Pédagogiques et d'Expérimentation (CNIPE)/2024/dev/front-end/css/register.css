@@ -1,0 +1,22 @@
+/* Styles for the disabled submit button */
+body {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+
+}
+
+
+#submit:disabled,
+input:disabled{
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+#submit:disabled {
+    background-color: #141414;
+}
+
+form{
+    position: relative;
+}

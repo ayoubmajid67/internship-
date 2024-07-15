@@ -9,22 +9,44 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 		<link rel="stylesheet" href="css/style.css" />
-		<link rel="stylesheet" href="css/login.css" />
+		<link rel="stylesheet" href="css/register.css" />
 	</head>
 	<body>
 		<form>
-			<h1>Login</h1>
+			<h1>Register</h1>
+            <div>
+                <input id="username" type="text" placeholder="username" required>
+            </div>
 			<div>
-				<input type="email" placeholder="Email"  required/>
+				<input type="email" id="email" placeholder="Email" />
 			</div>
 			<div class="passwordContainer">
-				<input type="password" placeholder="password" autocomplete  required/>
+				<input type="password" placeholder="password" id="password" autocomplete />
 				<i id="togglePassword" class="fas fa-eye toggle-password"></i>
+			</div>
+			<ul class="passVerf" id="hintBubbl">
+				<li id="charSize">
+					<i class="fa-solid fa-circle"></i>
+					<p>password must be at least 5 characters</p>
+				</li>
+				<li id="numExi">
+					<i class="fa-solid fa-circle"></i>
+					<p>password must contain at least a number</p>
+				</li>
+				<li id="charExi">
+					<i class="fa-solid fa-circle"></i>
+					<p>password must contain at least a special character</p>
+				</li>
+			</ul>
+
+			<div class="passwordContainer">
+                <input id="confirmPassword" type="password" placeholder="confirm password"  autocomplete required />
+                <i id="toggleConfirm" class="fas fa-eye toggle-password "></i>
 			</div>
 
 			<div class="btnContainer">
-				<input type="submit" value="login" />
-				<button id="register"><a href="/register.html">register</a></button>
+				<input type="submit" id="submit" value="Register" />
+				<button id="login"><a href="/login.html">Login</a></button>
 			</div>
 		</form>
 
@@ -39,6 +61,6 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="js/script.js"></script>
 
-		<script src="js/login.js"></script>
+		<script src="js/register.js"></script>
 	</body>
 </html>

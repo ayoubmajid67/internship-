@@ -5,6 +5,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Aide</title>
 		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/aide.css" />
+
         <link rel="shortcut icon" href="imgs/logo.jpg" type="image/x-icon">
 	
 
@@ -25,15 +27,159 @@
 				<li class="currentPage"><a href="#">Aide</a></li>
 
 				<div class="loginContainer">
-					<button id="login">Login</button>
+					<button id="loginBtn"><a href="/login.html">Login</a></button>
 				</div>
 			</ul>
-			<i class="fa-solid fa-bars" id="toogleMenu"></i>
+			<i class="fa-solid fa-bars" id="toggleMenu"></i>
 		</header>
 
 		<section class="mainContent">
+			<div class="landing">
+				<div class="container">
+					<div class="text">
+						<h1>Bienvenue sur la Page d'Aide</h1>
+						<p>Cette page fournit des guides détaillés, des vidéos explicatives et des documents téléchargeables pour vous aider à utiliser la plateforme efficacement.</p>
+					</div>
+					<div class="image">
+						<img src="imgs/landingAide.png" alt="landing img" />
+					</div>
+				</div>
 			
+				<a class="goDown" id="articles" href="#articles">
+					<i class="fa-solid fa-angles-down fa-2x"></i>
+				</a>
+			</div>
+
+	<!-- start Articles  -->
+	<div class="articles" id="articles">
+		<h2 class="mainTitle">Guides </h2>
+	
+		<div class="container">
+			<div class="box">
+				<div class="imgContainer">
+					<img src="imgs/videoAide.png" alt="Guide vidéo" />
+				</div>
+				
+				<div class="content">
+					<h3>Guide d'inscription à la plateforme</h3>
+					<p>Guide vidéo en langue <strong>Arabe </strong>montrant les étapes d'inscription à la plateforme </p>
+				</div>
+				<div class="info">
+					<a href="#">En savoir plus</a>
+					<i class="fas fa-long-arrow-alt-right"></i>
+				</div>
+			</div>
+			
+			<div class="box">
+				<div class="imgContainer">
+						<img src="imgs/videoAide.png" alt="Guide vidéo en français" />
+				</div>
+			
+				<div class="content">
+					<h3>Guide d'inscription à la plateforme</h3>
+					<p>Guide vidéo en <strong>français</strong>  décrivant les différentes étapes d'inscription </p>
+				</div>
+				<div class="info">
+					<a href="#">En savoir plus</a>
+					<i class="fas fa-long-arrow-alt-right"></i>
+				</div>
+			</div>
+			
+			<div class="box">
+				<div class="imgContainer">
+								<img src="imgs/documentsAide.png" alt="Document de guide" />
+				</div>
+	
+				<div class="content">
+					<h3>Guide de téléchargement</h3>
+					<p>Cette section comprend des guides et des documents téléchargeables </p>
+				</div>
+				<div class="info">
+					<a href="#">En savoir plus</a>
+					<i class="fas fa-long-arrow-alt-right"></i>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div class="spikes"></div>
+	<!-- end Articles  -->
+
+<!-- Start Events -->
+<div class="events" id="events">
+	<div class="dots dots-up"></div>
+	<div class="dots dots-down"></div>
+	<h2 class="mainTitle">Nouveaux Cours</h2>
+	<div class="container">
+		<img src="imgs/courses.png" alt="New Courses" />
+		<div class="info">
+			<div class="time">
+				<div class="unit">
+					<span class="days">30</span>
+					<span>Jours</span>
+				</div>
+				<div class="unit">
+					<span class="hours">24</span>
+					<span>Heures</span>
+				</div>
+				<div class="unit">
+					<span class="minutes">60</span>
+					<span>Minutes</span>
+				</div>
+				<div class="unit">
+					<span class="seconds">60</span>
+					<span>Secondes</span>
+				</div>
+			</div>
+			<h2 class="title">Nouveaux Cours Disponibles</h2>
+			<p class="description">Explorez nos nouveaux cours pour enrichir vos connaissances. Chaque cours est conçu pour offrir une expérience d'apprentissage approfondie et engageante.</p>
+		</div>
+		<div class="subscribe">
+			<form action="">
+				<input type="email" placeholder="Entrez votre email" />
+				<input type="submit" value="S'abonner" onclick="return false" />
+			</form>
+		</div>
+	</div>
+</div>
+<div class="spikes"></div>
+<!-- End Events -->
+
+
 		</section>
+
+				<!-- Footer Section -->
+				<footer>
+					<div class="footerContainer">
+						<div class="footerContent">
+							<div class="footerColumn">
+								<h4>Sites importants</h4>
+								<ul>
+									<li>Ministère de l'Éducation Nationale, du Préscolaire & des Sports</li>
+									<li>Taalim Tice</li>
+									<li>div.ead@men.gov.ma</li>
+									<li>Guides</li>
+								</ul>
+							</div>
+							<div class="footerColumn">
+								<h4>Catégorie cible</h4>
+								<ul>
+									<li>Enseignants</li>
+									<li>Inspecteurs</li>
+									<li>Cadre de l'administration pédagogique</li>
+								</ul>
+							</div>
+							<div class="footerColumn">
+								<h4>Nos partenaires</h4>
+								<ul>
+									<li>Direction du Système d'Information</li>
+									<li>Unité Centrale de la Formation des Cadres</li>
+									<li>Centres Régionaux des Métiers de l'Éducation et de la Formation</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</footer>
 
 		
 
