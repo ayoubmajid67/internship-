@@ -5,10 +5,15 @@ import datetime
 
 
 def add_formation(category_name, description):
+    server_ip = request.host.split(':')[0]
+    server_port = request.host.split(':')[1] if ':' in request.host else '80'
+    thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
+        category_name}/thumbnails"
     formation = {
         'categoryName': category_name,
         'createdDate': datetime.datetime.utcnow(),
-        "description": description,
+        'description': description,
+        'thumbnail': thumbnail_link,
         'courses': []
     }
     mongo.db.formations.insert_one(formation)
@@ -24,8 +29,18 @@ def get_formations():
                 '_id': 0,
                 'categoryName': 1,
                 'createdDate': 1,
-                'coursesSize': {
-                    '$size': '$courses'
+                'description': 1,
+                'thumbnail': 1,
+                'numberOfVideos': {
+                    '$sum': {
+                        '$map': {
+                            'input': '$courses',
+                            'as': 'course',
+                            'in': {
+                                '$size': '$$course.courseContent'
+                            }
+                        }
+                    }
                 },
                 'totalLikes': {
                     '$sum': {
@@ -38,9 +53,9 @@ def get_formations():
                                         {
                                             '$sum': {
                                                 '$map': {
-                                                    'input': '$course.courseContent',
+                                                    'input': '$$course.courseContent',
                                                     'as': 'content',
-                                                    'in': '$content.nbrOfLikes'
+                                                    'in': '$$content.nbrOfLikes'
                                                 }
                                             }
                                         },
@@ -60,7 +75,7 @@ def get_formations():
                                 '$ifNull': [
                                     {
                                         '$convert': {
-                                            'input': '$course.review',
+                                            'input': '$$course.review',
                                             'to': 'double',
                                             'onError': 0
                                         }
@@ -77,12 +92,14 @@ def get_formations():
             '$project': {
                 'categoryName': 1,
                 'createdDate': 1,
-                'courses': {
-                    'size': '$coursesSize',
+                'description': 1,
+                'thumbnail': 1,
+                'videos': {
+                    'numberOfVideos': '$numberOfVideos',
                     'totalLikes': '$totalLikes',
                     'averageReview': {
                         '$cond': {
-                            'if': {'$eq': ['$coursesSize', 0]},
+                            'if': {'$eq': ['$numberOfVideos', 0]},
                             'then': 0,
                             'else': {
                                 '$ifNull': ['$averageReview', 0]
@@ -94,6 +111,7 @@ def get_formations():
         }
     ]
     return list(mongo.db.formations.aggregate(pipeline))
+
 
 
 def get_formation_by_category(category_name):
@@ -111,19 +129,24 @@ def delete_formation_by_category(category_name):
     return mongo.db.formations.delete_one({'categoryName': category_name})
 
 
-def get_course_json_Structure(course_name, description):
+def get_course_json_Structure(category_name,course_name, description):
+    server_ip = request.host.split(':')[0]
+    server_port = request.host.split(':')[1] if ':' in request.host else '80'
+    thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
+category_name}/courses/{course_name}/thumbnails"
     return {
         "courseName": course_name,
         "createdDate": datetime.datetime.utcnow(),
         "description": description,
         "review": "",
         "comments": "",
+        'thumbnail': thumbnail_link,
         "courseContent": []
     }
 
 
 def add_course_to_formation(category_name, course_name, course_description):
-    course = get_course_json_Structure(course_name, course_description)
+    course = get_course_json_Structure(category_name,course_name, course_description)
     mongo.db.formations.update_one(
         {'categoryName': category_name},
         {'$addToSet': {'courses': course}}

@@ -1,0 +1,320 @@
+/* swel rla  samir */
+
+
+/* start features */
+.features {
+    padding-top: var(--sectionPaddingTop);
+    padding-bottom: var(--sectionPaddingBottom);
+    position: relative;
+    background-color: white;
+}
+
+.features .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+    gap: 40px;
+    --boxColor: #f44036;
+}
+
+.features .box {
+
+    text-align: center;
+    border: 1px solid #ccc;
+}
+
+.features .box .imgHolder {
+    position: relative;
+    overflow: hidden;
+}
+
+.features .box .imgHolder::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--boxColor);
+    opacity: 0.5;
+
+}
+
+.features .box .imgHolder::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-style: solid;
+    border-width: 0 0 170px 500px;
+    border-color: transparent transparent white transparent;
+    transition: var(--mainTransitionDuration);
+
+}
+
+.features .box .imgHolder:hover::after {
+    border-width: 170px 500px 170px 0px;
+
+}
+
+.features .box .imgHolder img {
+    max-width: 100%;
+}
+
+.features .box h2 {
+    position: relative;
+    font-size: 40px;
+    margin: auto;
+    width: fit-content;
+}
+
+.features .box h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    height: 5px;
+    bottom: -20px;
+
+    width: calc(100% - 30px);
+}
+
+.features .box p {
+    line-height: 1.8;
+    font-size: 20px;
+    margin: 30px 0;
+    padding: 20px;
+    font-weight: bold;
+    color: #777;
+}
+
+.features .box a {
+    display: block;
+
+    width: fit-content;
+    margin: 0 auto 30px;
+    font-size: 22px;
+
+    padding: 10px 30px;
+    border: 3.2px solid;
+    border-radius: 6px;
+    transition: var(--mainTransitionDuration);
+    background: linear-gradient(to right, var(--boxColor) 50%, white 50%);
+    background-size: 200% 200%;
+    background-position: right bottom;
+    color: var(--boxColor);
+
+}
+
+.features .box a:hover {
+    background-position: left bottom;
+    color: white;
+}
+
+.features .quality {
+
+    --boxColor: #f44036;
+}
+
+.features .time {
+
+    --boxColor: #009688;
+}
+
+
+.features .passion {
+
+    --boxColor: #03a9f4;
+}
+
+
+/* end features */
+
+/* start espace formation */
+.weContainerFormations {
+
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    padding: 20px;
+    justify-content: center;
+    align-content: space-around;
+    gap: 40px;
+
+
+}
+
+.weContainerFormations .card {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 5px;
+    justify-content: space-between;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.417);
+    max-width: 100%;
+    flex-basis: 450px;
+    flex-shrink: 0;
+
+
+    border-radius: 0px 0px 12px 12px;
+    margin-bottom: 4px;
+    background-color: #da6009d5;
+    background-color: #6b6968d5;
+
+    scale: 0.9;
+}
+
+.card .controlContainer {
+
+    background: black;
+    padding: 15px 8px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    align-items: center;
+
+}
+
+.controlContainer button {
+    margin-top: -5px;
+    margin-right: -5px;
+    padding: 13px 25px;
+    border-radius: 10px;
+    border: 3px solid;
+    font-size: 1.1em;
+    cursor: pointer;
+    color: white;
+    font-weight: 600;
+}
+
+.controlContainer button.edit {
+    background: #6d8eda;
+}
+
+.controlContainer button.delete {
+    background: var(--primaryColor);
+}
+
+.weContainerFormations img {
+    margin-top: -5px;
+    width: 100%;
+    height: 220px;
+}
+
+
+.card h3 {
+    padding: 0 10px;
+    font-size: 1.1em;
+    font-style: italic;
+    color: white;
+    margin-bottom: 2px;
+    margin-top: 3px;
+}
+
+
+.card p {
+    margin: 5px 0;
+    font-size: 0.82em;
+    padding: 0 12px;
+
+    line-height: 1.3;
+    padding-bottom: 4px;
+    font-weight: 600;
+    font-family: arial;
+    color: white;
+}
+
+
+.card .ProjectResource {
+
+    margin-top: -5px;
+    background-color: rgb(0, 0, 0);
+    padding: 10px;
+    text-align: center;
+    border-radius: 0px 0px 12px 12px;
+    transition: 0.4s;
+
+}
+
+.progressProject .ProjectResource {
+    background-color: #096e64;
+}
+
+.progressProject {
+    opacity: 0.6;
+}
+
+.ProjectResource a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+    text-transform: capitalize;
+    text-wrap: nowrap;
+
+}
+
+
+.ProjectResource:not(.progressProject .ProjectResource):hover {
+    background-color: var(--primaryColor);
+}
+
+.card {
+    transition: 0.6s;
+
+    filter: brightness(96%);
+}
+
+.card:not(.progressProject):hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    filter: grayscale(10%) saturate(70%);
+}
+
+@media (max-width:500px) {
+
+
+    .weContainerFormations .card {
+        width: 98%;
+        font-size: 14px;
+        overflow: hidden;
+    }
+
+    .controlContainer {
+        font-size: 12px;
+    }
+}
+
+
+
+.statistiques {
+    display: flex;
+    background-color: white;
+    padding: 5px;
+}
+
+.statistiques figure {
+    display: flex;
+
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+    gap: 10px;
+    width: 50%;
+
+}
+
+.statistiques figure:not(:last-child) {
+    border-right: 2px solid black;
+}
+
+.statistiques figure img {
+    --width: 40px;
+    width: var(--width);
+    height: var(--width);
+    aspect-ratio: 1/1;
+}
+
+/* end */
+
+/* end espace formation */

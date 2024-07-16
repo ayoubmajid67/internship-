@@ -637,3 +637,78 @@ form a {
     color: red;
     padding: 10px;
 }
+
+.searchContainer {
+    text-align: center;
+    width: 100%;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  
+  
+  }
+  @media (max-width :768px){
+    .searchContainer{
+      
+      padding: 0;
+    }
+  }
+  
+  /* start search container */
+  .searchContainer ::placeholder {
+    opacity: 0.8;
+  
+    font-weight: 400;
+  }
+  
+  .searchContainer .content {
+    display: flex;
+    gap: 15px;
+    width: 70%;
+    box-shadow: 0px 5px 20px #4a494950;
+    background-color: white;
+    align-items: center;
+    padding: 5px 20px;
+    min-width: 250px;
+    border-radius: 12px;
+  
+  }
+  
+  @media (max-width:1200px) {
+    .searchContainer .content {
+      width: 80%;
+    }
+  }
+  
+  @media (max-width : 992px) {
+    .searchContainer .content {
+      width: 90%;
+    }
+  }
+  
+  @media (max-width : 768px) {
+    .searchContainer .content {
+      width: 10 0%;
+    }
+  }
+  
+  .searchContainer input {
+    font-size: 1.2rem;
+    outline: none;
+    border: none;
+    flex-grow: 1;
+    max-width: 70%;
+    padding: 12px 20px;
+    color: black;
+    overflow: hidden;
+  }
+  
+  @media (max-width :768px) {
+    .searchContainer input {
+      font-size: 1rem;
+    }
+  }
+
+/* end search container */

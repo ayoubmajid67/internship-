@@ -140,9 +140,9 @@ def login():
         return jsonify({'error': 'Invalid credentials'}), 401
 
     token = utile.generate_token(email)
-    username=user["username"]
-    profileImg=user["profileImg"]
-    return jsonify({'message': "User login successfully", 'token': token,'username':username,'profileImg':profileImg})
+    username = user["username"]
+    profileImg = user["profileImg"]
+    return jsonify({'message': "User login successfully", 'token': token, 'username': username, 'profileImg': profileImg})
 
 
 @bp.route('/dropUser', methods=['DELETE'])
@@ -246,7 +246,7 @@ def uploaded_file(filename):
 @token_required
 @admin_required
 def create_formation(current_user):
-    data = request.get_json() or {}
+    data = request.form
     missing_fields = utile.validate_fields(
         data, ['categoryName', "description"])
     if missing_fields:
@@ -255,16 +255,24 @@ def create_formation(current_user):
     categoryName = str(data["categoryName"]).strip().lower()
 
     sanitized_categoryName = file_utils.sanitize_filename(categoryName)
-    print("the sanitized category name : ", sanitized_categoryName)
     description = str(data["description"]).strip()
+    thumbnail_file = request.files.get('thumbnail')
 
     if formation_model.get_formation_by_category(sanitized_categoryName):
         return jsonify({'error': 'Formation with this category already exists'}), 400
 
-    formation_model.add_formation(sanitized_categoryName, description)
     file_utils.create_category_dir(sanitized_categoryName)
+    file_utils.save_category_thumbnail(sanitized_categoryName, thumbnail_file)
+    formation_model.add_formation(sanitized_categoryName, description)
 
     return jsonify({'message': f'Formation created successfully :{sanitized_categoryName} / {categoryName}'}), 201
+
+
+@bp.route('/formations/<category_name>/thumbnails/', methods=['GET'])
+def get_category_thumbnail(category_name):
+    category_name = file_utils.sanitize_filename(category_name.strip().lower())
+    category_dir = os.path.join(file_utils.CATEGORIES_DIR, category_name)
+    return send_from_directory(category_dir, f"{category_name}_thumbnail.jpg")
 
 
 @bp.route('/formations', methods=['POST'])
@@ -343,7 +351,7 @@ def delete_single_formation_by_category(current_user, category_name):
 @token_required
 @admin_required
 def create_course(current_user, category_name):
-    data = request.get_json() or {}
+    data = request.form
     category_name = file_utils.sanitize_filename(category_name.strip().lower())
     course_name = file_utils.sanitize_filename(
         str(data.get('courseName', '')).strip().lower())
@@ -356,14 +364,26 @@ def create_course(current_user, category_name):
         return jsonify({'error': f'Missing fields: {", ".join(missing_fields)}'}), 400
 
     course_description = str(data.get('description', '')).strip().lower()
+
     if not formation_model.get_formation_by_category(category_name):
         return jsonify({'error': 'Formation with this category does not exist'}), 404
+    thumbnail_file = request.files.get('thumbnail')
 
+    file_utils.create_course_dir(category_name, course_name)
+    file_utils.save_course_thumbnail(category_name,course_name ,thumbnail_file)
     formation_model.add_course_to_formation(
         category_name, course_name, course_description)
-    file_utils.create_course_dir(category_name, course_name)
 
     return jsonify({'message': 'Course created successfully'}), 201
+
+@bp.route('/formations/<category_name>/courses/<course_name>/thumbnails/', methods=['GET'])
+def get_course_thumbnail(category_name,course_name):
+
+    category_name = file_utils.sanitize_filename(category_name.strip().lower())
+    course_name = file_utils.sanitize_filename(course_name.strip().lower())
+    course_dir = os.path.join(file_utils.CATEGORIES_DIR, category_name,course_name)
+    print(course_dir,f"\{course_name}_thumbnail.jpg")
+    return send_from_directory(course_dir, f"{course_name}_thumbnail.jpg")
 
 
 @bp.route('/formations/<category_name>/courses/<course_name>', methods=['GET'])
@@ -389,13 +409,12 @@ def update_course_route(current_user, category_name, course_name):
     if not formation_model.get_course_from_formation_by_name(category_name, course_name):
         return jsonify({'error': f'Formation with {category_name} category does not contain {course_name} course'}), 404
 
-    data = request.get_json() or {}
+    data = request.form
 
-    if not (data.get('courseName') or data.get('description')):
-        return jsonify({'error': 'At least one field (courseName or description) is required'}), 400
+    if not (data.get('courseName') or data.get('description') or data.get('thumbnail')):
+        return jsonify({'error': 'At least one field (courseName or description or thumbnail) is required'}), 400
 
-    new_course_name = file_utils.sanitize_filename(
-        str(data.get('courseName', '')).strip().lower())
+    new_course_name = file_utils.sanitize_filename(str(data.get('courseName', '')).strip().lower())
     new_course_description = str(data.get('description', '')).strip().lower()
 
     if new_course_name:
@@ -414,6 +433,11 @@ def update_course_route(current_user, category_name, course_name):
 
     formation_model.update_course_in_formation(
         category_name, course_name, update_fields)
+    
+    thumbnail_file = request.files.get('thumbnail')
+    if thumbnail_file :
+        file_utils.save_course_thumbnail(category_name,course_name ,thumbnail_file)
+
 
     return jsonify({'message': 'Course updated successfully'})
 
@@ -583,10 +607,10 @@ def get_thumbnail(category_name, course_name, filename):
 @bp.route('/formations/<category_name>/courses/<course_name>/content/<title>', methods=['PUT'])
 @token_required
 @admin_required
-def update_course_content(current_user,category_name, course_name, title):
+def update_course_content(current_user, category_name, course_name, title):
     if 'video' not in request.files and 'thumbnail' not in request.files:
         return 'No video or thumbnail provided', 400
-    
+
     # Find the course content to be deleted
     title = file_utils.sanitize_filename(title.lower())
     course_content = formation_model.get_course_content_by_title(
@@ -621,7 +645,7 @@ def update_course_content(current_user,category_name, course_name, title):
 @bp.route('/formations/<category_name>/courses/<course_name>/content/<title>', methods=['DELETE'])
 @token_required
 @admin_required
-def delete_course_content(current_user,category_name, course_name, title):
+def delete_course_content(current_user, category_name, course_name, title):
     # Find the course content to be deleted
     title = file_utils.sanitize_filename(title.lower())
     course_content = formation_model.get_course_content_by_title(

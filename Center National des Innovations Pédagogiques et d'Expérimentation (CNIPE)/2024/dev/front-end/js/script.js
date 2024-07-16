@@ -289,3 +289,23 @@ window.addEventListener("load", function () {
 		setUiGuestStat();
 	}
 });
+
+let boxesContainer = document.querySelectorAll(".domainContent");
+let searchInput = document.querySelector(".searchContainer input");
+
+function filterCards(domain, attName) {
+	domain.querySelectorAll(".domainContent .card").forEach((card) => {
+		if (card.getAttribute(attName) && !card.getAttribute(attName).toLowerCase().trim().includes(searchInput.value.toLowerCase().trim())) {
+			card.style.display = "none";
+		} else {
+			card.style.display = "flex";
+		}
+	});
+}
+
+function filterContainers(attName) {
+	boxesContainer.forEach((domain) => {
+		filterCards(domain, attName);
+	});
+}
+let searchContainer = document.querySelector(".searchContainer .content");
