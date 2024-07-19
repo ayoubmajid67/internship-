@@ -21,7 +21,7 @@ async function login(email, password) {
 		localStorage.setItem("username", data.username);
 		setProfileImg(data.profileImg);
 
-		goTHome();
+		goToHome();
 	} catch (error) {
 		// Handle error and display message
 		if (error.response && error.response.data && error.response.data.error) {

@@ -1,12 +1,14 @@
 {
     "categoryName": "",
     "createdDate": "",
+    "thumbnail":"",
     "courses": [
       {
         "courseName": "",
         "createdDate": "",
         "description":"",
         "review":"",
+        "thumbnail":"",
         "courseContent": [
           {
             "videoLink": "",

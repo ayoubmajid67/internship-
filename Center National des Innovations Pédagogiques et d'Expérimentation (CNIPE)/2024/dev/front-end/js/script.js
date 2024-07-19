@@ -37,8 +37,14 @@ function scrollToTopSmooth() {
 	});
 }
 
-function goTHome() {
+function goToHome() {
 	if (location.pathname != "/index.html" && location.pathname != "/") location.href = "/";
+}
+function goToEspaceFormation() {
+	if (location.pathname != "/EspaceFormation.html") location.href = "/EspaceFormation.html";
+}
+function isEspaceFormationPage() {
+	return location.pathname == "/EspaceFormation.html";
 }
 
 function goToLoginPage() {
@@ -49,8 +55,8 @@ let navBarImgs = document.querySelectorAll(".logoContainer img");
 if (navBarImgs.length != 0) {
 	let navBarImg1 = navBarImgs[0];
 	let navBarImg2 = navBarImgs[1];
-	navBarImg1.onclick = goTHome;
-	navBarImg2.onclick = goTHome;
+	navBarImg1.onclick = goToHome;
+	navBarImg2.onclick = goToHome;
 }
 
 function getProfileImg() {
@@ -87,7 +93,7 @@ function isCoursePage() {
 function isProfilePage() {
 	return location.pathname == "/course.html";
 }
-function goTHome() {
+function goToHome() {
 	if (location.pathname != "/index.html" && location.pathname != "/") location.href = "/";
 }
 function setUiGuestStat() {
@@ -101,8 +107,18 @@ function setUiGuestStat() {
 		dropUserFromLocalSt();
 
 		if (isCoursePage() || isProfilePage()) {
-			goTHome();
+			goToHome();
 		}
+	}
+}
+
+function clearAdminCategoryBoxButtons() {
+	categoriesCards = document.querySelectorAll(".domainContent .card");
+	if (categoriesCards) {
+		categoriesCards.forEach((card) => {
+			adminControl = "";
+			if ((adminControl = card.querySelector("controlContainer"))) adminControl.remove();
+		});
 	}
 }
 

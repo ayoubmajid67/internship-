@@ -102,7 +102,7 @@ async function register(username, email, password) {
 }
 
 window.addEventListener("load", () => {
-	if (isLogin()) goTHome();
+	if (isLogin()) goToHome();
 });
 
 loginForm.addEventListener("submit", async function (event) {

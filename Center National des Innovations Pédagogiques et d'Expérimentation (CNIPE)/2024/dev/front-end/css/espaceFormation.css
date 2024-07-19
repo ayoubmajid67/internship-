@@ -137,7 +137,7 @@
     flex-flow: row wrap;
     width: 100%;
     padding: 20px;
-    justify-content: center;
+    
     align-content: space-around;
     gap: 40px;
 
@@ -157,8 +157,8 @@
 
     border-radius: 0px 0px 12px 12px;
     margin-bottom: 4px;
-    background-color: #da6009d5;
-    background-color: #6b6968d5;
+
+
 
     scale: 0.9;
 }
@@ -205,7 +205,7 @@
     padding: 0 10px;
     font-size: 1.1em;
     font-style: italic;
-    color: white;
+
     margin-bottom: 2px;
     margin-top: 3px;
 }
@@ -220,52 +220,71 @@
     padding-bottom: 4px;
     font-weight: 600;
     font-family: arial;
-    color: white;
-}
-
-
-.card .ProjectResource {
-
-    margin-top: -5px;
-    background-color: rgb(0, 0, 0);
-    padding: 10px;
-    text-align: center;
-    border-radius: 0px 0px 12px 12px;
-    transition: 0.4s;
-
-}
-
-.progressProject .ProjectResource {
-    background-color: #096e64;
-}
-
-.progressProject {
-    opacity: 0.6;
-}
-
-.ProjectResource a {
-    text-decoration: none;
-    color: white;
-    font-size: 1.2em;
-    text-transform: capitalize;
-    text-wrap: nowrap;
 
 }
 
 
-.ProjectResource:not(.progressProject .ProjectResource):hover {
-    background-color: var(--primaryColor);
-}
 
 .card {
     transition: 0.6s;
 
     filter: brightness(96%);
+
 }
 
-.card:not(.progressProject):hover {
-    transform: translateY(-5px);
+.card .imgContainer {
+    margin-top: -5px;
+
+    position: relative;
+    overflow: hidden;
 }
+
+.card .imgContainer::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: -5px;
+    background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(1.7px);
+
+    z-index: 1;
+    top: 0;
+    transition: 0.4s;
+}
+
+.card .imgContainer:hover::before {
+    background-color: rgba(0, 0, 0, 0.535);
+}
+
+.imgContainer .beforeContent {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0);
+    transition: 0.4s;
+
+    z-index: 2;
+    color: white;
+
+}
+
+.beforeContent .categoryName {
+    font-size: 1.4em;
+
+}
+
+.imgContainer:hover .beforeContent {
+    transform: scale(100%);
+}
+
 
 .card img {
     filter: grayscale(10%) saturate(70%);
@@ -313,6 +332,11 @@
     width: var(--width);
     height: var(--width);
     aspect-ratio: 1/1;
+}
+
+.card *:not(.controlContainer) {
+
+    cursor: pointer;
 }
 
 /* end */

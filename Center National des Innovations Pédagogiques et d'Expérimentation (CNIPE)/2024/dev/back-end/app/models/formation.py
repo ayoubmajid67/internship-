@@ -113,27 +113,181 @@ def get_formations():
     return list(mongo.db.formations.aggregate(pipeline))
 
 
-
 def get_formation_by_category(category_name):
     return mongo.db.formations.find_one({'categoryName': category_name}, {'_id': 0, 'courses.courseContent': 0})
 
 
 def update_formation_by_category(old_category_name, update_fields):
+    if update_fields.get('categoryName'):
+        server_ip = request.host.split(':')[0]
+        server_port = request.host.split(
+            ':')[1] if ':' in request.host else '80'
+        new_category_name = update_fields['categoryName']
+        formation_thumbnail_link = f"http://{server_ip}:{
+            server_port}/formations/{new_category_name}/thumbnails"
+
+        # Update formation thumbnail
+        update_fields['thumbnail'] = formation_thumbnail_link
+
+        # Update the thumbnail for each course within the formation
+        update_courses_thumbnail_link(
+            old_category_name, new_category_name, server_ip, server_port)
+
+        # Update video links for each course
+        update_courses_video_links(
+            old_category_name, new_category_name, server_ip, server_port)
+
     return mongo.db.formations.update_one(
         {'categoryName': old_category_name},
         {'$set': update_fields}
     )
 
 
+def update_courses_thumbnail_link(old_category_name, new_category_name, server_ip, server_port):
+    # Find the formation by the old category name
+    formation = mongo.db.formations.find_one(
+        {'categoryName': old_category_name})
+
+    if formation:
+        # Construct new thumbnail link for courses
+        for course in formation.get('courses', []):
+            new_thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
+                new_category_name}/courses/{course['courseName']}/thumbnails"
+
+            # Update the thumbnail link in the course
+            mongo.db.formations.update_one(
+                {'categoryName': old_category_name,
+                    'courses.courseName': course['courseName']},
+                {'$set': {'courses.$.thumbnail': new_thumbnail_link}}
+            )
+
+
+def update_courses_video_links(old_category_name, new_category_name, server_ip, server_port):
+    # Find the formation by the old category name
+    formation = mongo.db.formations.find_one(
+        {'categoryName': old_category_name})
+
+    if formation:
+        # Iterate through courses and update links
+        for course in formation.get('courses', []):
+            course_name = course.get('courseName', '')
+            update_specific_course_links(
+                old_category_name, new_category_name, course_name, server_ip, server_port)
+
+
+def update_specific_course_links(old_category_name, new_category_name, course_name, server_ip, server_port):
+    # Find the specific course by the old category name and course name
+    formation = mongo.db.formations.find_one(
+        {'categoryName': old_category_name, 'courses.courseName': course_name})
+
+    if formation:
+        # Iterate through course content
+        for course in formation.get('courses', []):
+            if course.get('courseName') == course_name:
+                for content in course.get('courseContent', []):
+                    video_link = content.get('videoLink', '')
+                    if video_link:
+                        # Construct new video link
+                        new_video_link = f"http://{server_ip}:{server_port}/formations/{
+                            new_category_name}/courses/{course_name}/videos/{content['title']}"
+
+                        # Update the video link in the course content
+                        mongo.db.formations.update_one(
+                            {
+                                'categoryName': old_category_name,
+                                'courses.courseName': course_name,
+                                'courses.courseContent.title': content['title']
+                            },
+                            {
+                                '$set': {'courses.$[course].courseContent.$[content].videoLink': new_video_link}
+                            },
+                            array_filters=[{'course.courseName': course_name}, {
+                                'content.title': content['title']}]
+                        )
+
+                    # Update thumbnail link for each content
+                    new_thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
+                        new_category_name}/courses/{course_name}/thumbnails/{content['title']}"
+                    mongo.db.formations.update_one(
+                        {
+                            'categoryName': old_category_name,
+                            'courses.courseName': course_name,
+                            'courses.courseContent.title': content['title']
+                        },
+                        {
+                            '$set': {'courses.$[course].courseContent.$[content].thumbnail': new_thumbnail_link}
+                        },
+                        array_filters=[{'course.courseName': course_name}, {
+                            'content.title': content['title']}]
+                    )
+
+
+def update_course_links(category_name, course_name,new_course_name, server_ip, server_port):
+    # Find the specific course by the old category name and course name
+    formation = mongo.db.formations.find_one(
+        {'categoryName': category_name, 'courses.courseName': course_name})
+
+    if formation:
+        # Iterate through course content
+        for course in formation.get('courses', []):
+            if course.get('courseName') == course_name:
+                for content in course.get('courseContent', []):
+                    video_link = content.get('videoLink', '')
+                    if video_link:
+                        # Construct new video link
+                        new_video_link = f"http://{server_ip}:{server_port}/formations/{
+                            category_name}/courses/{new_course_name}/videos/{content['title']}"
+
+                        # Update the video link in the course content
+                        mongo.db.formations.update_one(
+                            {
+                                'categoryName': category_name,
+                                'courses.courseName': course_name,
+                                'courses.courseContent.title': content['title']
+                            },
+                            {
+                                '$set': {'courses.$[course].courseContent.$[content].videoLink': new_video_link}
+                            },
+                            array_filters=[{'course.courseName': course_name}, {
+                                'content.title': content['title']}]
+                        )
+
+                    # Update thumbnail link for each content
+                    new_thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
+                        category_name}/courses/{new_course_name}/thumbnails/{content['title']}"
+                    mongo.db.formations.update_one(
+                        {
+                            'categoryName': category_name,
+                            'courses.courseName': course_name,
+                            'courses.courseContent.title': content['title']
+                        },
+                        {
+                            '$set': {'courses.$[course].courseContent.$[content].thumbnail': new_thumbnail_link}
+                        },
+                        array_filters=[{'course.courseName': course_name}, {
+                            'content.title': content['title']}]
+                    )
+
 def delete_formation_by_category(category_name):
     return mongo.db.formations.delete_one({'categoryName': category_name})
 
+def get_number_of_formations() : 
+    return  mongo.db.formations.count_documents({})
 
-def get_course_json_Structure(category_name,course_name, description):
+def get_simple_formations() :
+   return  mongo.db.formations.find({})
+
+
+
+
+    
+
+#course functions : _-------------------
+def get_course_json_Structure(category_name, course_name, description):
     server_ip = request.host.split(':')[0]
     server_port = request.host.split(':')[1] if ':' in request.host else '80'
     thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
-category_name}/courses/{course_name}/thumbnails"
+        category_name}/courses/{course_name}/thumbnails"
     return {
         "courseName": course_name,
         "createdDate": datetime.datetime.utcnow(),
@@ -146,7 +300,8 @@ category_name}/courses/{course_name}/thumbnails"
 
 
 def add_course_to_formation(category_name, course_name, course_description):
-    course = get_course_json_Structure(category_name,course_name, course_description)
+    course = get_course_json_Structure(
+        category_name, course_name, course_description)
     mongo.db.formations.update_one(
         {'categoryName': category_name},
         {'$addToSet': {'courses': course}}
@@ -161,7 +316,13 @@ def update_course_in_formation(category_name, course_name, data):
     # Build update document dynamically
     update_doc = {}
     if new_course_name:
+        server_ip = request.host.split(':')[0]
+        server_port = request.host.split(
+            ':')[1] if ':' in request.host else '80'
+        thumbnail_link = f"http://{server_ip}:{server_port}/formations/{category_name}/courses/{new_course_name}/thumbnails"
         update_doc['courses.$.courseName'] = new_course_name
+        update_doc['courses.$.thumbnail'] = thumbnail_link
+        update_course_links(category_name, course_name,new_course_name, server_ip, server_port)
     if new_description:
         update_doc['courses.$.description'] = new_description
 
@@ -262,11 +423,51 @@ def create_course_content_object(category_name, course_name, title, video_info, 
     return course_content
 
 
-def update_course_content_in_db(category_name, course_name, course_content):
+def create_course_content(category_name, course_name, course_content):
+    new_title_name = course_content.get('title', '')
+
+    if new_title_name:
+        server_ip = request.host.split(':')[0]
+        server_port = request.host.split(
+            ':')[1] if ':' in request.host else '80'
+        video_link = f"http://{server_ip}:{server_port}/formations/{
+            category_name}/courses/{course_name}/videos/{new_title_name}"
+        thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
+            category_name}/courses/{course_name}/thumbnails/{new_title_name}"
+        course_content['courses.$.courseContent.title'] = video_link
+        course_content['courses.$.courseContent.thumbnail'] = thumbnail_link
+
     result = mongo.db.formations.update_one(
         {'categoryName': category_name, 'courses.courseName': course_name},
         {'$addToSet': {'courses.$.courseContent': course_content}}
     )
+    return result
+
+
+def update_course_content_in_db(category_name, course_name, old_title, course_content):
+    # Extract the new title from the course content
+    new_title_name = course_content.get('title', '')
+
+    # If the new title is provided, construct new video and thumbnail links
+    if new_title_name:
+        server_ip = request.host.split(':')[0]
+        server_port = request.host.split(
+            ':')[1] if ':' in request.host else '80'
+        video_link = f"http://{server_ip}:{server_port}/formations/{
+            category_name}/courses/{course_name}/videos/{new_title_name}"
+        thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
+            category_name}/courses/{course_name}/thumbnails/{new_title_name}"
+        course_content['videoLink'] = video_link
+        course_content['thumbnail'] = thumbnail_link
+
+    # Update the specific course content in the database
+    result = mongo.db.formations.update_one(
+        {'categoryName': category_name, 'courses.courseName': course_name,
+            'courses.courseContent.title': old_title},
+        {'$set': {'courses.$.courseContent.$[content]': course_content}},
+        array_filters=[{'content.title': old_title}]
+    )
+
     return result
 
 

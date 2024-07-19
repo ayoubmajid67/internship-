@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Formation</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/espaceFormation.css" />
+        <link rel="stylesheet" href="css/formation.css">
+		<link rel="shortcut icon" href="imgs/logo.jpg" type="image/x-icon" />
+
+		<!-- font awesome -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	</head>
+	<body>
+		<header>
+			<div class="logoContainer">
+				<img src="imgs/logo.jpg" class="logo" alt="landing page logo" />
+				<img src="imgs/logoAr.jpg" class="logoAr" alt="landing page logo" />
+			</div>
+
+			<ul>
+				<li><a href="/index.html">Home</a></li>
+				<li class="currentPage"><a href="#">Espace formation</a></li>
+				<li><a href="aide.html">Aide</a></li>
+
+				<div class="loginContainer">
+					<button id="loginBtn"><a href="/login.html">Login</a></button>
+				</div>
+			</ul>
+			<i class="fa-solid fa-bars" id="toggleMenu"></i>
+		</header>
+
+		<section class="mainContent">
+			<!--start features   -->
+			<div class="features" id="features">
+				<div class="mainTitle">Formation</div>
+
+				<div class="formationContainer">
+					<div class="textInfo">
+						<h2>categoryName</h2>
+						<p>description</p>
+					</div>
+
+					<div class="thumbnailContainer">
+						<img src="" alt="formation thumbnail img" />
+					</div>
+				</div>
+			</div>
+			<div class="spikes"></div>
+			<!--end features   -->
+
+			<div class="espaceFormation">
+				<div class="mainTitle">Espace Formation</div>
+
+				<div class="searchContainer">
+					<div class="content">
+						<i class="fa-solid fa-magnifying-glass"></i>
+						<input type="text" id="SearchInput" placeholder="Search" />
+					</div>
+				</div>
+
+				<div class="weContainerFormations domainContent">
+					<!-- 1 portfolio 1 -->
+					<article formationName="portfolio 1" class="card">
+						<div class="controlContainer">
+							<button class="edit">Edit</button>
+							<button class="delete">Delete</button>
+						</div>
+						<div class="imgContainer">
+									<img  src="imgs/features-01.jpg" type="image/webp" alt="portfolio 1" />
+
+						</div>
+				
+						<h3>1 - Portfolio 1</h3>
+						<p>My portfolio offers a holistic view of me and my offerings. The 'Home' section connects visitors to my CV and social media, 'About Me' provides background insight, 'Services' and 'Skills' showcase expertise, and 'Contact Me' ensures easy communication—a comprehensive professional identity.</p>
+						<div class="statistiques">
+							<figure class="likesFigure">
+								<img src="imgs/likes.png" alt="like img" />
+								<h5>10</h5>
+							</figure>
+							<figure class="totalVideosFigure">
+								<img src="imgs/videos.png" alt="video img" />
+								<h5>10</h5>
+							</figure>
+						</div>
+
+					</article>
+				</div>
+			</div>
+		</section>
+
+		<!-- Footer Section -->
+		<footer>
+			<div class="footerContainer">
+				<div class="footerContent">
+					<div class="footerColumn">
+						<h4>Sites importants</h4>
+						<ul>
+							<li>Ministère de l'Éducation Nationale, du Préscolaire & des Sports</li>
+							<li>Taalim Tice</li>
+							<li>div.ead@men.gov.ma</li>
+							<li>Guides</li>
+						</ul>
+					</div>
+					<div class="footerColumn">
+						<h4>Catégorie cible</h4>
+						<ul>
+							<li>Enseignants</li>
+							<li>Inspecteurs</li>
+							<li>Cadre de l'administration pédagogique</li>
+						</ul>
+					</div>
+					<div class="footerColumn">
+						<h4>Nos partenaires</h4>
+						<ul>
+							<li>Direction du Système d'Information</li>
+							<li>Unité Centrale de la Formation des Cadres</li>
+							<li>Centres Régionaux des Métiers de l'Éducation et de la Formation</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		<!-- axios library -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="js/script.js"></script>
+		<script src="js/formation.js"></script>
+	</body>
+</html>

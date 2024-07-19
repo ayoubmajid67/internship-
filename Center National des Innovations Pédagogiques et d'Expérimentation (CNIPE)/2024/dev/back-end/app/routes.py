@@ -205,6 +205,43 @@ def get_users_and_admins(current_user):
     return jsonify(users_and_admins), 200
 
 
+@bp.route('/stats', methods=['GET'])
+def get_stats():
+    # Get the count of users
+    user_count =user_model.get_number_of_users()
+
+    # Get the count of courses
+    formation_count = formation_model.get_number_of_formations()
+    course_count = 0
+    video_count = 0
+
+    # Count courses and videos
+    formations = formation_model.get_simple_formations()
+    for formation in formations:
+        courses = formation.get('courses', [])
+        course_count += len(courses)
+        for course in courses:
+            videos = course.get('courseContent', [])
+            video_count += len(videos)
+
+    stats = {
+        "numberOfUsers": user_count,
+        "numberOfCategories":formation_count,
+        "numberOfCourses": course_count,
+        "numberOfVideos": video_count
+    }
+
+    return jsonify(stats), 200
+
+@bp.route('/userRole', methods=['GET'])
+@token_required
+def get_user_role(current_user):
+    user_role = current_user.get('accountType')
+    if not user_role : 
+        return jsonify({"error":"invalid user type"})
+    return jsonify({"role": user_role}), 200
+
+
 # Formation routes
 @bp.route('/formations', methods=['GET'])
 def get_all_formations():
@@ -297,7 +334,7 @@ def get_single_formation_by_category(category_name):
 @token_required
 @admin_required
 def update_single_formation_category(current_user, category_name):
-    data = request.get_json() or {}
+    data = request.form 
     sanitized_category_name = file_utils.sanitize_filename(
         category_name.strip().lower())
 
@@ -310,13 +347,16 @@ def update_single_formation_category(current_user, category_name):
     sanitized_new_category_name = file_utils.sanitize_filename(
         new_category_name)
     new_description = str(data.get('newDescription', '')).strip()
+    thumbnail_file = request.files.get('thumbnail')
 
-    if not new_category_name and not new_description:
-        return jsonify({'error': 'Either newCategoryName or newDescription must be provided'}), 400
+    if not new_category_name and not new_description and not thumbnail_file:
+        return jsonify({'error': 'Either newCategoryName or newDescription  or thumbnail must be provided'}), 400
 
     if new_category_name and formation_model.get_formation_by_category(sanitized_new_category_name):
         return jsonify({'error': 'Category name already exists'}), 400
 
+    if thumbnail_file :
+       file_utils.save_category_thumbnail(sanitized_category_name, thumbnail_file)
     update_fields = {}
     if new_category_name:
         update_fields['categoryName'] = sanitized_new_category_name
@@ -423,20 +463,23 @@ def update_course_route(current_user, category_name, course_name):
         if existing_course:
             return jsonify({'error': 'Course name already exists'}), 400
 
+
+    thumbnail_file = request.files.get('thumbnail')
+    if thumbnail_file :
+        file_utils.save_course_thumbnail(category_name,course_name ,thumbnail_file)
+
+
     update_fields = {}
     if new_course_name:
         update_fields['courseName'] = new_course_name
-        file_utils.update_course_dir(
-            category_name, course_name, new_course_name)
+        file_utils.update_course_dir(category_name, course_name, new_course_name)
     if new_course_description:
         update_fields['description'] = new_course_description
 
     formation_model.update_course_in_formation(
         category_name, course_name, update_fields)
     
-    thumbnail_file = request.files.get('thumbnail')
-    if thumbnail_file :
-        file_utils.save_course_thumbnail(category_name,course_name ,thumbnail_file)
+
 
 
     return jsonify({'message': 'Course updated successfully'})
@@ -468,10 +511,8 @@ def create_comment(current_user, category_name, course_name):
 
     category_name = file_utils.sanitize_filename(category_name.strip().lower())
     course_name = file_utils.sanitize_filename(course_name.strip().lower())
-
-    course = formation_model.get_course_from_formation_by_name(
-        category_name, course_name)
-    if not course:
+    
+    if not formation_model.get_course_from_formation_by_name(category_name, course_name):
         return jsonify({'error': 'Course not found'}), 404
 
     message = str(data['message']).strip()
@@ -557,6 +598,9 @@ def add_course_content(category_name, course_name):
 
     if not title:
         return jsonify({'error': 'Title is required'}), 400
+    
+    if not formation_model.get_course_from_formation_by_name(category_name, course_name):
+        return jsonify({'error': 'Course not found'}), 404
 
     existing_content = formation_model.get_course_content_by_title(
         category_name, course_name, title)
@@ -569,8 +613,7 @@ def add_course_content(category_name, course_name):
     course_content = formation_model.create_course_content_object(
         category_name, course_name, title, video_info, description)
 
-    result = formation_model.update_course_content_in_db(
-        category_name, course_name, course_content)
+    result = formation_model.create_course_content(category_name, course_name, course_content)
 
     if result.modified_count:
         return jsonify({'message': 'Course content added successfully'}), 201
@@ -608,62 +651,81 @@ def get_thumbnail(category_name, course_name, filename):
 @token_required
 @admin_required
 def update_course_content(current_user, category_name, course_name, title):
-    if 'video' not in request.files and 'thumbnail' not in request.files:
-        return 'No video or thumbnail provided', 400
+
+
+    if 'video' not in request.files and 'thumbnail' not in request.files and 'title' not in request.form:
+      return jsonify({"error": "No video, thumbnail, or title provided"}), 400
 
     # Find the course content to be deleted
-    title = file_utils.sanitize_filename(title.lower())
+    title = file_utils.sanitize_filename(title.lower().strip())
     course_content = formation_model.get_course_content_by_title(
         category_name, course_name, title)
 
     if not course_content:
-        return 'Course content not found', 404
+        return  jsonify({ "error" :'Course content not found'}),404
 
     video_file = request.files.get('video')
     thumbnail_file = request.files.get('thumbnail')
+    new_title=str(request.form.get("title")).lower().strip()
 
+ 
+    new_title =file_utils.sanitize_filename(new_title)
+    print(new_title)
+
+
+    if new_title  and formation_model.get_course_content_by_title(category_name, course_name, new_title):
+                return jsonify({'error': ' video Title already exists'}), 400
+    
+
+    
     update_data = {}
+    if new_title : 
+        update_data['title']=new_title
+        file_utils. update_course_content_dir(category_name,course_name,title,new_title)
+
     if video_file:
         video_info = file_utils.save_video(
-            category_name, course_name, title, video_file)
+            category_name, course_name, new_title, video_file)
         update_data['duration'] = video_info['duration']
 
     if thumbnail_file:
         file_utils.save_thumbnail(
-            category_name, course_name, title, thumbnail_file)
+            category_name, course_name, new_title, thumbnail_file)
 
     # Update the course content in the database
-    result = formation_model.update_course_content_in_db(
-        category_name, course_name, title, update_data)
+    result = formation_model.update_course_content_in_db(category_name, course_name, title, update_data)
 
     if result.matched_count == 0:
-        return 'Course content not found', 404
+        return jsonify({"error":"Course content not found"}), 404
 
-    return 'Course content updated successfully', 200
+    return  jsonify({"message":'Course content updated successfully'}), 200
 
 
+import shutil
 @bp.route('/formations/<category_name>/courses/<course_name>/content/<title>', methods=['DELETE'])
 @token_required
 @admin_required
 def delete_course_content(current_user, category_name, course_name, title):
     # Find the course content to be deleted
-    title = file_utils.sanitize_filename(title.lower())
+    title = file_utils.sanitize_filename(title.lower().strip())
     course_content = formation_model.get_course_content_by_title(
         category_name, course_name, title)
 
     if not course_content:
         return 'Course content not found', 404
 
+    contentPath = os.path.join(file_utils.CATEGORIES_DIR, category_name, course_name, 'videos', title)
+
+    if os.path.exists(contentPath):
+        shutil.rmtree(contentPath)
+  
+
     # Remove the course content from the database
     result = formation_model.delete_course_content_in_db(
         category_name, course_name, title)
     if result.modified_count == 0:
-        return 'Failed to delete course content', 500
+        return jsonify({"error" :"Failed to delete course content"}), 500
 
-    contentPath = os.path.join(
-        file_utils.CATEGORIES_DIR, category_name, course_name, 'videos', title)
+    return   jsonify({"message"'Course content deleted successfully'}), 200
 
-    if os.path.exists(contentPath):
-        os.remove(contentPath)
 
-    return 'Course content deleted successfully', 200

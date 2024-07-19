@@ -122,5 +122,9 @@ def get_All_by_username(username):
     return mongo.db.users.find_one({'email': username}, {'_id': 0})
 
 
+def get_number_of_users() : 
+    return  mongo.db.users.count_documents({})
+    
+
 # add_owner("youbista","ayoubmajjid@gmail.com","MajjidDev2024")
 # add_owner("dnau","dnau@gmail.com","dnauDev2024")
