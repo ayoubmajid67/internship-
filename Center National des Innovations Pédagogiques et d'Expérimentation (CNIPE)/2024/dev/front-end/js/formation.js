@@ -10,7 +10,10 @@ async function isAdminOrOwner() {
 function getHtmlStructure(formation) {
 	let adminContent = "";
 
-	if (isAdminOrOwner()) {
+	if(isLogin()){
+
+
+			if (isAdminOrOwner()) {
 		adminContent = `
 	 						<div class="controlContainer">
 							<button class="edit">Edit</button>
@@ -19,6 +22,8 @@ function getHtmlStructure(formation) {
 	 
 	 `;
 	}
+	}
+
 
 	return `
 					<article formationName=${formation.categoryName} class="card">

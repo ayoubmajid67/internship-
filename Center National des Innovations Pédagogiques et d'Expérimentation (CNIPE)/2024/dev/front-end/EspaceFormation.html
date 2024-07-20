@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Espace formation</title>
 		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/domain.css">
 		<link rel="stylesheet" href="css/espaceFormation.css" />
 		<link rel="shortcut icon" href="imgs/logo.jpg" type="image/x-icon" />
 
@@ -137,9 +138,31 @@
 			</div>
 		</footer>
 
-				<!-- axios library -->
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<section class="hint">
+			<div class="alert alert-primary">
+				<h3 class="alert-title">Hello World</h3>
+				<p class="alert-content">Lorem ipsum</p>
+			</div>
+		</section>
+
+		<div class="blackDrop"></div>
+
+
+		<div id="deleteChatPopup" class="deletePopup popUpBox">
+			<div class="popupContent ">
+				<h2 class="popUpTitle ">Supprimer Formation ?</h2>
+				<p >Cela supprimera  <span class="popUpDomainName ">311R9 PFA.</span></p>
+				<div class="popupButtons">
+					<button class="popupButton popupButtonCancel ">Cancel</button>
+					<button class="popupButton popupButtonDelete ">Delete</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- axios library -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="js/script.js"></script>
+		<script src="js/domain.js"></script>
 		<script src="js/espaceFormation.js"></script>
 	</body>
 </html>

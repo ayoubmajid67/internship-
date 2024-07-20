@@ -98,13 +98,15 @@ function goToHome() {
 }
 function setUiGuestStat() {
 	let signOutBtn = document.getElementById("signOutBtn");
+	dropUserFromLocalSt();
 	if (signOutBtn) {
 		signOutBtn.innerHTML = `<a href="/login.html">Login</a>`;
 		signOutBtn.id = "loginBtn";
 
 		let profile = document.querySelector("ul li.profile");
 		profile.remove();
-		dropUserFromLocalSt();
+
+		clearAdminCategoryBoxButtons();
 
 		if (isCoursePage() || isProfilePage()) {
 			goToHome();
@@ -113,11 +115,16 @@ function setUiGuestStat() {
 }
 
 function clearAdminCategoryBoxButtons() {
-	categoriesCards = document.querySelectorAll(".domainContent .card");
+	const addDomainContentContainer = document.querySelector(".addDomainContainer");
+
+	addDomainContentContainer.remove();
+
+	const categoriesCards = document.querySelectorAll(".domainContent .card");
 	if (categoriesCards) {
 		categoriesCards.forEach((card) => {
 			adminControl = "";
-			if ((adminControl = card.querySelector("controlContainer"))) adminControl.remove();
+			console.log(card);
+			if ((adminControl = card.querySelector(".controlContainer"))) adminControl.remove();
 		});
 	}
 }
@@ -325,3 +332,69 @@ function filterContainers(attName) {
 	});
 }
 let searchContainer = document.querySelector(".searchContainer .content");
+function getDomainContentHtmlStructure(contentName) {
+	return `			
+	
+	<div class="addCategoryParent  addDomainContainer">
+					<div class="addCategoryContainer">
+						<button id="AddCategoryBtn">Ajouter </button>
+						<div class="addIconContainer">
+          								<img src="imgs/createIcon.png" alt="create domain img" />
+						</div>
+					</div>
+				</div>
+	
+	`;
+}
+function switchBtnHandler(btn, newClass, newText, newClickEventFunction) {
+	if (btn) {
+		btn.classList = newClass;
+		btn.textContent = newText;
+		if (newClickEventFunction) btn.setAttribute("onclick", newClickEventFunction);
+	}
+}
+
+async function isAdminOrOwner() {
+	try {
+		if (!isLogin()) {
+			setUiGuestStat();
+			throw "Invalid User login";
+		}
+
+		// Make sure to include the token in the headers
+		const token = localStorage.getItem("userToken");
+		
+		const response = await axios.get(`${baseUrl}/userRole`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		const data = response.data;
+
+		// Check the user's role
+		return data.role !== "normal";
+	} catch (error) {
+		// Handle error and display message
+		if (error.response && error.response.data && error.response.data.message) {
+			throw { message: error.response.data.message, type: "warning" };
+		} else {
+			throw { message: "An unexpected error occurred.", type: "danger" };
+		}
+	}
+}
+
+function scrollToTopHard() {
+	document.body.scrollTop = 0; // For Safari
+	document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+}
+function scrollToPositionHard(position) {
+	document.body.scrollTop = position; // For Safari
+	document.documentElement.scrollTop = position; // For Chrome, Firefox, IE, and Opera
+}
+function scrollToTopSmooth() {
+	window.scrollTo({
+		top: 0,
+		behavior: "smooth",
+	});
+}

@@ -1,0 +1,345 @@
+.addCategoryParent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+html{
+scroll-behavior: unset;
+}
+
+.addCategoryContainer {
+    width: 300px;
+
+    max-width: 90%;
+    display: flex;
+
+
+
+    box-shadow: 1px 3px 10px rgba(95, 59, 17, 0.15);
+    align-items: center;
+}
+
+.addCategoryContainer {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.addCategoryContainer button {
+
+
+    padding: 25px 20px;
+    font-size: 1.2em;
+    width: 60%;
+
+
+    font-weight: bold;
+
+    background-color: var(--primaryColor);
+    background-color: var(--secondaryLightColor);
+    color: white;
+    transition: var(--mainTransitionDuration);
+}
+
+.addCategoryContainer .addIconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-grow: 1;
+
+}
+
+.addIconContainer img {
+    width: 60%;
+}
+
+.domainContent {
+
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    padding: 20px;
+
+    align-content: space-around;
+    gap: 40px;
+
+
+}
+
+@media (max-width : 992px) {
+
+    .domainContent {
+        justify-content: center;
+    }
+
+}
+
+.domainContent .card {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 5px;
+    justify-content: space-between;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.417);
+    max-width: 100%;
+    flex-basis: 450px;
+    flex-shrink: 0;
+
+
+    border-radius: 0px 0px 12px 12px;
+    margin-bottom: 4px;
+transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+
+    scale: 0.9;
+}
+.domainContent.deleteStatus .card {
+    
+    transform:  translateY(-5px); 
+
+}
+
+
+.card .controlContainer {
+
+    background: black;
+    padding: 15px 8px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    align-items: center;
+
+}
+.card.deleteStatus .controlContainer {
+background-color: var(--primaryColor);
+
+}
+
+.controlContainer button {
+    margin-top: -5px;
+    margin-right: -5px;
+    padding: 13px 25px;
+    border-radius: 10px;
+    border: 3px solid;
+    font-size: 1.1em;
+    cursor: pointer;
+    color: white;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-weight: 600;
+}
+
+.controlContainer button.cancel,
+.controlContainer button.edit {
+    background: var(--secondaryLightColor);
+}
+
+.controlContainer button.save {
+    background-color: var(--cancelBg);
+
+}
+
+.controlContainer button.delete {
+    background: var(--primaryColor);
+}
+
+.domainContent img {
+    margin-top: -5px;
+    width: 100%;
+    height: 220px;
+}
+
+
+.card h3 {
+    padding: 0 10px;
+    font-size: 1.1em;
+    font-style: italic;
+
+    margin-bottom: 2px;
+    margin-top: 3px;
+}
+
+
+.card p {
+    margin: 5px 0;
+    font-size: 0.82em;
+    padding: 0 12px;
+
+    line-height: 1.3;
+    padding-bottom: 4px;
+    font-weight: 600;
+    font-family: arial;
+
+}
+
+
+
+
+.card .imgContainer {
+    margin-top: -5px;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.card .imgContainer::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 99%;
+    left: 0;
+    top: -5px;
+    background-color: rgba(0, 0, 0, 0);
+
+
+    z-index: 1;
+    top: 0;
+    transition: 0.4s;
+}
+
+.card .imgContainer:hover::before {
+    background-color: rgba(0, 0, 0, 0.535);
+    backdrop-filter: blur(1.7px);
+}
+
+.imgContainer .beforeContent {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0);
+    transition: 0.4s;
+
+    z-index: 2;
+    color: white;
+
+}
+
+.beforeContent .categoryName {
+    font-size: 1.4em;
+
+}
+
+.imgContainer:hover .beforeContent {
+    transform: scale(100%);
+}
+
+
+.card img {
+    filter: grayscale(10%) saturate(70%);
+}
+
+@media (max-width:500px) {
+
+
+    .domainContent .card {
+        width: 98%;
+        font-size: 14px;
+        overflow: hidden;
+    }
+
+    .controlContainer {
+        font-size: 12px;
+    }
+}
+
+
+
+.blackDrop {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.356);
+    filter: blur(1.5px);
+    backdrop-filter: blur(0px);
+    left: 0;
+    top: 0;
+    display: none;
+
+}
+
+.blackDrop.activeBox {
+
+    display: block;
+}
+
+
+
+.popUpBox {
+    /* Styles for the popup box */
+    position: fixed;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 30px;
+    opacity: 1;
+    z-index: 555;
+
+    transition: opacity 0.3s ease-in-out;
+    top: 45%;
+
+    left: calc(50% + 70px);
+
+
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    border-radius: 12px;
+
+    display: none;
+
+}
+
+
+
+
+.popUpBox.activeBox {
+
+    display: block;
+}
+
+
+
+.popUpBox .popupContent {
+    /* Styles for the content area of the popup */
+    max-width: 400px;
+    min-width: 350px;
+    margin: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.popUpBox .popupButtons {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+
+.popUpBox .popupButton {
+    /* Styles for the buttons inside the popup */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.popUpBox .popupButtonCancel {
+    /* Styles for the "Cancel" button */
+    background-color: black;
+}
+
+
+.popUpBox .popupButtonDelete {
+    /* Styles for the "Delete" button */
+    background-color: #f00;
+}

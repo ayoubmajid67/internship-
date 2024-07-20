@@ -22,3 +22,9 @@ window.addEventListener("load", function () {
 	fetchStatistics();
 });
 
+const EspaceFormationBtn=document.getElementById("EspaceFormationBtn"); 
+EspaceFormationBtn.addEventListener('click',function(){
+ 
+	goToEspaceFormation();
+
+})

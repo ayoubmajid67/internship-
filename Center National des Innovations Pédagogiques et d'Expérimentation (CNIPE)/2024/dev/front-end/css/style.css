@@ -72,11 +72,13 @@ body, html {
 :root {
     --primaryColor: #ed731d;
     --secondaryColor: #1e3875;
+    --secondaryLightColor :#6d8eda;
     --mainTransitionDuration:0.3s;
     --borderColor: #e9e6e6;
     --sectionPaddingTop: 100px;
     --sectionPaddingBottom: 100px;
     --sectionBk: #ececec;
+    --cancelBg:#f11818;
 }
 
 header {
@@ -420,7 +422,7 @@ footer ul li {
 
 section.hint {
     transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: absolute;
+    position: fixed;
     top: 150px;
     width: 450px;
     max-width: 100%;
