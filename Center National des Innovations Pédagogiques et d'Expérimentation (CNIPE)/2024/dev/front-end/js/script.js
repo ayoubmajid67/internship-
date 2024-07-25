@@ -337,7 +337,7 @@ function getDomainContentHtmlStructure(contentName) {
 	
 	<div class="addCategoryParent  addDomainContainer">
 					<div class="addCategoryContainer">
-						<button id="AddCategoryBtn">Ajouter </button>
+						<button id="addDomainBtn" onclick="manageAddDomain(event)">Ajouter </button>
 						<div class="addIconContainer">
           								<img src="imgs/createIcon.png" alt="create domain img" />
 						</div>
@@ -346,11 +346,13 @@ function getDomainContentHtmlStructure(contentName) {
 	
 	`;
 }
-function switchBtnHandler(btn, newClass, newText, newClickEventFunction) {
+function switchBtnHandler(btn, newClass, newText, newClickEventFunction,) {
 	if (btn) {
 		btn.classList = newClass;
 		btn.textContent = newText;
 		if (newClickEventFunction) btn.setAttribute("onclick", newClickEventFunction);
+
+		
 	}
 }
 
@@ -397,4 +399,15 @@ function scrollToTopSmooth() {
 		top: 0,
 		behavior: "smooth",
 	});
+}
+function scrollToPositionSmooth(position) {
+	window.scrollTo({
+		top: position,
+		behavior: "smooth",
+	});
+}
+function autoResize(textarea) {
+	
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight + 20) + 'px';
 }

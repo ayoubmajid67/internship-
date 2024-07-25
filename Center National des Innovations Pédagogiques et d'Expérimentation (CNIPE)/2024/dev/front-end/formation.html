@@ -34,25 +34,28 @@
 
 		<section class="mainContent">
 			<!--start features   -->
-			<div class="features" id="features">
-				<div class="mainTitle">Formation</div>
-
-				<div class="formationContainer">
+			<div class="mainTitle">Introduction</div>
+			<div class="formationInfo" id="formationInfo">
+				<div class="introVideo">
+					<video src="videos/landingVideo.mp4" autoplay muted ></video>
+				</div>
+			
+				<div class="formationPictureContainer">
 					<div class="textInfo">
 						<h2>categoryName</h2>
-						<p>description</p>
+						<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem unde esse placeat qui modi quod harum accusantium tempore? Aliquam recusandae voluptates officiis voluptate esse obcaecati provident repellendus veniam consequuntur placeat!</p>
 					</div>
+	
 
-					<div class="thumbnailContainer">
-						<img src="" alt="formation thumbnail img" />
-					</div>
+				
 				</div>
+		
 			</div>
 			<div class="spikes"></div>
 			<!--end features   -->
 
 			<div class="espaceFormation">
-				<div class="mainTitle">Espace Formation</div>
+				<div class="mainTitle">Espace Cours</div>
 
 				<div class="searchContainer">
 					<div class="content">
@@ -128,6 +131,45 @@
 				<p class="alert-content">Lorem ipsum</p>
 			</div>
 		</section>
+
+		<div class="deletePopup popUpBox">
+			<div class="popupContent">
+				<h2 class="popUpTitle">Supprimer Formation ?</h2>
+				<p>Cela supprimera <span class="popUpDomainName">311R9 PFA.</span></p>
+				<div class="popupButtons">
+					<button class="popupButton popupButtonCancel">Cancel</button>
+					<button class="popupButton popupButtonDelete">Delete</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="addPopup popUpBox">
+			<div class="popupContent">
+				<div class="header">
+					<h2 class="popUpTitle">Ajouter Formation</h2>
+					<button id="closeAddDomainBtn">
+						<i class="fa-solid fa-xmark" onclick="setDisablePopUpBoxMode()"></i>
+					</button>
+				</div>
+				
+
+				<input  class="domainTitleInput" placeholder="category De Formation">
+
+				<textarea class="descriptionInput" placeholder="description de formation" oninput="manageAddFormationDescriptionChange(event)"></textarea>
+				<div class="imgContainer">
+					<div class="content">
+						<h4>Choose a File</h4>
+						<img src="imgs/addPost.svg" alt="add-image" />
+					</div>
+					<input type="file" name="image" accept="image/*" onchange="manageAddDomainImgFileChange(event)" />
+				</div>
+
+				<div class="popupButtons">
+					<button class="popupButton popupButtonCancel">Cancel</button>
+					<button class="popupButton popupButtonAddDomain" onclick="addFormation(event)">Add</button>
+				</div>
+			</div>
+		</div>
 
 		<!-- axios library -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

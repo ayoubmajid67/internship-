@@ -1,5 +1,61 @@
-.formationContainer{ 
+.formationInfo {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.formationInfo .introVideo {
+
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+
+.introVideo video {
+    width: 90%;
+    border-radius: 12px;
+}
+@media (min-width:1200px){
+    .introVideo video{
+        width: 70%;
+    }
+}
+.formationPictureContainer{
+     display: flex;
+     flex-direction: column;
+     gap: 30px;
+     padding: 10px;
+     align-items: center;
+}
+.formationPictureContainer >div{
+
+min-width: 350px;
+width: 90%;
+}
+
+.formationPictureContainer .textInfo{
+  border-left: 2px solid var(--primaryColor);
+    padding: 15px 25px;
+  
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.formationPictureContainer .thumbnailContainer{
 display: flex;
+justify-content: center;
+align-items: center;
 
-
+}
+.thumbnailContainer img{
+    width: 350px;
+    max-width: 100%;
+    aspect-ratio: 1/1;
+   height: 350px;
 }

@@ -1,8 +1,7 @@
 searchInput.addEventListener("input", () => {
-	filterContainers("formationName");
+	filterContainers("courseName");
 });
 
-const webContainer = document.querySelector(".weContainerFormations");
 
 async function isAdminOrOwner() {
 	return true;
@@ -93,3 +92,5 @@ async function manageGetFormations() {
 async function test() {}
 
 manageGetFormations();
+
+// 8QvpTfEZ5A

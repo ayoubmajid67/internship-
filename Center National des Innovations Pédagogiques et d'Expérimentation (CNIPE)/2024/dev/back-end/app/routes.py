@@ -1,3 +1,4 @@
+import shutil
 from flask import Blueprint, jsonify, request, current_app, send_from_directory, abort
 from functools import wraps
 import jwt
@@ -208,7 +209,7 @@ def get_users_and_admins(current_user):
 @bp.route('/stats', methods=['GET'])
 def get_stats():
     # Get the count of users
-    user_count =user_model.get_number_of_users()
+    user_count = user_model.get_number_of_users()
 
     # Get the count of courses
     formation_count = formation_model.get_number_of_formations()
@@ -226,19 +227,20 @@ def get_stats():
 
     stats = {
         "numberOfUsers": user_count,
-        "numberOfCategories":formation_count,
+        "numberOfCategories": formation_count,
         "numberOfCourses": course_count,
         "numberOfVideos": video_count
     }
 
     return jsonify(stats), 200
 
+
 @bp.route('/userRole', methods=['GET'])
 @token_required
 def get_user_role(current_user):
     user_role = current_user.get('accountType')
-    if not user_role : 
-        return jsonify({"error":"invalid user type"})
+    if not user_role:
+        return jsonify({"error": "invalid user type"})
     return jsonify({"role": user_role}), 200
 
 
@@ -294,15 +296,73 @@ def create_formation(current_user):
     sanitized_categoryName = file_utils.sanitize_filename(categoryName)
     description = str(data["description"]).strip()
     thumbnail_file = request.files.get('thumbnail')
+    if thumbnail_file and not utile.allowed_file_img(thumbnail_file.filename):
+        return jsonify({'error': f'invalid thumbnail file extension format allowed : {current_app.config["ALLOWED_IMG_EXTENSIONS"]} '}), 400
 
     if formation_model.get_formation_by_category(sanitized_categoryName):
         return jsonify({'error': 'Formation with this category already exists'}), 400
 
     file_utils.create_category_dir(sanitized_categoryName)
     file_utils.save_category_thumbnail(sanitized_categoryName, thumbnail_file)
-    formation_model.add_formation(sanitized_categoryName, description)
+    formation = formation_model.add_formation(
+        sanitized_categoryName, description)
 
-    return jsonify({'message': f'Formation created successfully :{sanitized_categoryName} / {categoryName}'}), 201
+    return jsonify({'message': f'Formation created successfully :', 'formationData': formation}), 201
+
+
+@bp.route('/formations/<category_name>/introVideo', methods=['POST'])
+@token_required
+@admin_required
+def add_intro_video_to_formation(current_user, category_name):
+    category_name = file_utils.sanitize_filename(category_name)
+    formation = formation_model.get_formation_by_category(category_name)
+
+    if not formation:
+        return jsonify({'error': 'Formation not found'}), 404
+
+    intro_video = request.files.get('introVideo')
+
+    if not intro_video:
+        return jsonify({'error': 'Missing intro video file'}), 400
+
+    if not utile.allowed_file_video(intro_video.filename):
+        return jsonify({'error': f'invalid intro video file extension format allowed : {current_app.config["ALLOWED_VIDEO_EXTENSIONS"]} '}), 400
+
+    file_utils.save_category_intro_video(category_name, intro_video)
+    video_link = file_utils.get_intro_video_link(category_name)
+
+    formation_model.update_formation_by_category(
+        category_name, {'introVideo': video_link})
+
+    return jsonify({'message': 'Intro video added successfully'}), 200
+
+
+@bp.route('/formations/<category_name>/introVideo/', methods=['GET'])
+def get_category_intro_video(category_name):
+    category_name = file_utils.sanitize_filename(category_name.strip().lower())
+    category_dir = os.path.join(file_utils.CATEGORIES_DIR, category_name)
+    if os.path.exists(f"{category_dir}/{category_name}_introVideo.mp4"):
+        return send_from_directory(category_dir, f"{category_name}_introVideo.mp4")
+    else:
+        return jsonify({"error": "intro video not found"})
+
+
+@bp.route('/formations/<category_name>/introVideo', methods=['DELETE'])
+@token_required
+@admin_required
+def delete_intro_video_to_formation(current_user, category_name):
+    category_name = file_utils.sanitize_filename(category_name)
+    formation = formation_model.get_formation_by_category(category_name)
+
+    if not formation:
+        return jsonify({'error': 'Formation not found'}), 404
+
+    file_utils.delete_category_intro_video(category_name)
+
+    formation_model.update_formation_by_category(
+        category_name, {'introVideo': None})
+
+    return jsonify({'message': 'Intro video deleted successfully'}), 200
 
 
 @bp.route('/formations/<category_name>/thumbnails/', methods=['GET'])
@@ -334,7 +394,7 @@ def get_single_formation_by_category(category_name):
 @token_required
 @admin_required
 def update_single_formation_category(current_user, category_name):
-    data = request.form 
+    data = request.form
     sanitized_category_name = file_utils.sanitize_filename(
         category_name.strip().lower())
 
@@ -355,9 +415,16 @@ def update_single_formation_category(current_user, category_name):
     if new_category_name and formation_model.get_formation_by_category(sanitized_new_category_name):
         return jsonify({'error': 'Category name already exists'}), 400
 
-    if thumbnail_file :
-       file_utils.save_category_thumbnail(sanitized_category_name, thumbnail_file)
+
+
+    if thumbnail_file and not utile.allowed_file_img(thumbnail_file.filename):
+        return jsonify({'error': f'invalid thumbnail file extension format allowed : {current_app.config["ALLOWED_IMG_EXTENSIONS"]} '}), 400
+
+    if thumbnail_file:
+        file_utils.save_category_thumbnail(category_name,thumbnail_file)
+   
     update_fields = {}
+
     if new_category_name:
         update_fields['categoryName'] = sanitized_new_category_name
         file_utils.update_category_dir(
@@ -366,9 +433,11 @@ def update_single_formation_category(current_user, category_name):
     if new_description:
         update_fields['description'] = new_description
 
-    formation_model.update_formation_by_category(
+    updated_dir_data = formation_model.update_formation_by_category(
         sanitized_category_name, update_fields)
 
+    if new_category_name:
+        return jsonify({'message': 'Formation updated successfully', "thumbnail": updated_dir_data["thumbnail"], "introVideo": updated_dir_data["introVideo"]})
     return jsonify({'message': 'Formation updated successfully'})
 
 
@@ -409,20 +478,27 @@ def create_course(current_user, category_name):
         return jsonify({'error': 'Formation with this category does not exist'}), 404
     thumbnail_file = request.files.get('thumbnail')
 
+    if thumbnail_file and not utile.allowed_file_img(thumbnail_file.filename):
+        return jsonify({'error': f'invalid thumbnail file extension format allowed : {current_app.config["ALLOWED_IMG_EXTENSIONS"]} '}), 400
+
+
     file_utils.create_course_dir(category_name, course_name)
-    file_utils.save_course_thumbnail(category_name,course_name ,thumbnail_file)
+    file_utils.save_course_thumbnail(
+        category_name, course_name, thumbnail_file)
     formation_model.add_course_to_formation(
         category_name, course_name, course_description)
 
     return jsonify({'message': 'Course created successfully'}), 201
 
+
 @bp.route('/formations/<category_name>/courses/<course_name>/thumbnails/', methods=['GET'])
-def get_course_thumbnail(category_name,course_name):
+def get_course_thumbnail(category_name, course_name):
 
     category_name = file_utils.sanitize_filename(category_name.strip().lower())
     course_name = file_utils.sanitize_filename(course_name.strip().lower())
-    course_dir = os.path.join(file_utils.CATEGORIES_DIR, category_name,course_name)
-    print(course_dir,f"\{course_name}_thumbnail.jpg")
+    course_dir = os.path.join(
+        file_utils.CATEGORIES_DIR, category_name, course_name)
+
     return send_from_directory(course_dir, f"{course_name}_thumbnail.jpg")
 
 
@@ -454,7 +530,8 @@ def update_course_route(current_user, category_name, course_name):
     if not (data.get('courseName') or data.get('description') or data.get('thumbnail')):
         return jsonify({'error': 'At least one field (courseName or description or thumbnail) is required'}), 400
 
-    new_course_name = file_utils.sanitize_filename(str(data.get('courseName', '')).strip().lower())
+    new_course_name = file_utils.sanitize_filename(
+        str(data.get('courseName', '')).strip().lower())
     new_course_description = str(data.get('description', '')).strip().lower()
 
     if new_course_name:
@@ -463,24 +540,24 @@ def update_course_route(current_user, category_name, course_name):
         if existing_course:
             return jsonify({'error': 'Course name already exists'}), 400
 
-
     thumbnail_file = request.files.get('thumbnail')
-    if thumbnail_file :
-        file_utils.save_course_thumbnail(category_name,course_name ,thumbnail_file)
+    if thumbnail_file:
+        if not utile.allowed_file_img(thumbnail_file.filename):
+            return jsonify({'error': f'invalid thumbnail file extension format allowed : {current_app.config["ALLOWED_IMG_EXTENSIONS"]} '}), 400
 
+        file_utils.save_course_thumbnail(
+            category_name, course_name, thumbnail_file)
 
     update_fields = {}
     if new_course_name:
         update_fields['courseName'] = new_course_name
-        file_utils.update_course_dir(category_name, course_name, new_course_name)
+        file_utils.update_course_dir(
+            category_name, course_name, new_course_name)
     if new_course_description:
         update_fields['description'] = new_course_description
 
     formation_model.update_course_in_formation(
         category_name, course_name, update_fields)
-    
-
-
 
     return jsonify({'message': 'Course updated successfully'})
 
@@ -511,7 +588,7 @@ def create_comment(current_user, category_name, course_name):
 
     category_name = file_utils.sanitize_filename(category_name.strip().lower())
     course_name = file_utils.sanitize_filename(course_name.strip().lower())
-    
+
     if not formation_model.get_course_from_formation_by_name(category_name, course_name):
         return jsonify({'error': 'Course not found'}), 404
 
@@ -591,14 +668,20 @@ def add_course_content(category_name, course_name):
         return jsonify({'error': 'Video file is required'}), 400
 
     video_file = request.files['video']
+    if not utile.allowed_file_video(video_file.filename):
+        return jsonify({'error': f'invalid intro video file extension format allowed : {current_app.config["ALLOWED_VIDEO_EXTENSIONS"]} '}), 400
+
     title = file_utils.sanitize_filename(
         str(request.form.get('title', '')).strip().lower())
     description = str(request.form.get('description', '')).strip()
     thumbnail = request.files.get('thumbnail')
 
+    if thumbnail and not utile.allowed_file_img(thumbnail.filename):
+        return jsonify({'error': f'invalid thumbnail file extension format allowed : {current_app.config["ALLOWED_IMG_EXTENSIONS"]} '}), 400
+
     if not title:
         return jsonify({'error': 'Title is required'}), 400
-    
+
     if not formation_model.get_course_from_formation_by_name(category_name, course_name):
         return jsonify({'error': 'Course not found'}), 404
 
@@ -613,7 +696,8 @@ def add_course_content(category_name, course_name):
     course_content = formation_model.create_course_content_object(
         category_name, course_name, title, video_info, description)
 
-    result = formation_model.create_course_content(category_name, course_name, course_content)
+    result = formation_model.create_course_content(
+        category_name, course_name, course_content)
 
     if result.modified_count:
         return jsonify({'message': 'Course content added successfully'}), 201
@@ -652,9 +736,8 @@ def get_thumbnail(category_name, course_name, filename):
 @admin_required
 def update_course_content(current_user, category_name, course_name, title):
 
-
     if 'video' not in request.files and 'thumbnail' not in request.files and 'title' not in request.form:
-      return jsonify({"error": "No video, thumbnail, or title provided"}), 400
+        return jsonify({"error": "No video, thumbnail, or title provided"}), 400
 
     # Find the course content to be deleted
     title = file_utils.sanitize_filename(title.lower().strip())
@@ -662,26 +745,29 @@ def update_course_content(current_user, category_name, course_name, title):
         category_name, course_name, title)
 
     if not course_content:
-        return  jsonify({ "error" :'Course content not found'}),404
+        return jsonify({"error": 'Course content not found'}), 404
 
     video_file = request.files.get('video')
     thumbnail_file = request.files.get('thumbnail')
-    new_title=str(request.form.get("title")).lower().strip()
+    new_title = str(request.form.get("title")).lower().strip()
 
- 
-    new_title =file_utils.sanitize_filename(new_title)
+    if thumbnail_file and not utile.allowed_file_img(thumbnail_file.filename):
+        return jsonify({'error': f'invalid thumbnail file extension format allowed : {current_app.config["ALLOWED_IMG_EXTENSIONS"]} '}), 400
+
+    if video_file and not utile.allowed_file_video(video_file.filename):
+        return jsonify({'error': f'invalid intro video file extension format allowed : {current_app.config["ALLOWED_VIDEO_EXTENSIONS"]} '}), 400
+
+    new_title = file_utils.sanitize_filename(new_title)
     print(new_title)
 
+    if new_title and formation_model.get_course_content_by_title(category_name, course_name, new_title):
+        return jsonify({'error': ' video Title already exists'}), 400
 
-    if new_title  and formation_model.get_course_content_by_title(category_name, course_name, new_title):
-                return jsonify({'error': ' video Title already exists'}), 400
-    
-
-    
     update_data = {}
-    if new_title : 
-        update_data['title']=new_title
-        file_utils. update_course_content_dir(category_name,course_name,title,new_title)
+    if new_title:
+        update_data['title'] = new_title
+        file_utils. update_course_content_dir(
+            category_name, course_name, title, new_title)
 
     if video_file:
         video_info = file_utils.save_video(
@@ -693,15 +779,15 @@ def update_course_content(current_user, category_name, course_name, title):
             category_name, course_name, new_title, thumbnail_file)
 
     # Update the course content in the database
-    result = formation_model.update_course_content_in_db(category_name, course_name, title, update_data)
+    result = formation_model.update_course_content_in_db(
+        category_name, course_name, title, update_data)
 
     if result.matched_count == 0:
-        return jsonify({"error":"Course content not found"}), 404
+        return jsonify({"error": "Course content not found"}), 404
 
-    return  jsonify({"message":'Course content updated successfully'}), 200
+    return jsonify({"message": 'Course content updated successfully'}), 200
 
 
-import shutil
 @bp.route('/formations/<category_name>/courses/<course_name>/content/<title>', methods=['DELETE'])
 @token_required
 @admin_required
@@ -714,18 +800,16 @@ def delete_course_content(current_user, category_name, course_name, title):
     if not course_content:
         return 'Course content not found', 404
 
-    contentPath = os.path.join(file_utils.CATEGORIES_DIR, category_name, course_name, 'videos', title)
+    contentPath = os.path.join(
+        file_utils.CATEGORIES_DIR, category_name, course_name, 'videos', title)
 
     if os.path.exists(contentPath):
         shutil.rmtree(contentPath)
-  
 
     # Remove the course content from the database
     result = formation_model.delete_course_content_in_db(
         category_name, course_name, title)
     if result.modified_count == 0:
-        return jsonify({"error" :"Failed to delete course content"}), 500
+        return jsonify({"error": "Failed to delete course content"}), 500
 
-    return   jsonify({"message"'Course content deleted successfully'}), 200
-
-
+    return jsonify({"message"'Course content deleted successfully'}), 200

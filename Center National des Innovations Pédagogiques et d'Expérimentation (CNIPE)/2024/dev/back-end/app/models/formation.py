@@ -4,11 +4,13 @@ from bson.objectid import ObjectId
 import datetime
 
 
-def add_formation(category_name, description):
+def add_formation(category_name, description,isIntroVideo=""):
     server_ip = request.host.split(':')[0]
     server_port = request.host.split(':')[1] if ':' in request.host else '80'
     thumbnail_link = f"http://{server_ip}:{server_port}/formations/{
         category_name}/thumbnails"
+    introVideoLink=""
+
     formation = {
         'categoryName': category_name,
         'createdDate': datetime.datetime.utcnow(),
@@ -16,7 +18,9 @@ def add_formation(category_name, description):
         'thumbnail': thumbnail_link,
         'courses': []
     }
-    mongo.db.formations.insert_one(formation)
+    result=mongo.db.formations.insert_one(formation)
+    formation.pop('_id', None)  # Remove the MongoDB ID from the returned dictionary
+    return formation
 
 # def get_formations():
 #     return list(mongo.db.formations.find())
@@ -118,6 +122,8 @@ def get_formation_by_category(category_name):
 
 
 def update_formation_by_category(old_category_name, update_fields):
+    formation_thumbnail_link=""
+    formation_intro_video_link=""
     if update_fields.get('categoryName'):
         server_ip = request.host.split(':')[0]
         server_port = request.host.split(
@@ -125,9 +131,12 @@ def update_formation_by_category(old_category_name, update_fields):
         new_category_name = update_fields['categoryName']
         formation_thumbnail_link = f"http://{server_ip}:{
             server_port}/formations/{new_category_name}/thumbnails"
+        formation_intro_video_link = f"http://{server_ip}:{
+            server_port}/formations/{new_category_name}/introVideo"
 
         # Update formation thumbnail
         update_fields['thumbnail'] = formation_thumbnail_link
+        update_fields['introVideo'] = formation_intro_video_link
 
         # Update the thumbnail for each course within the formation
         update_courses_thumbnail_link(
@@ -137,10 +146,14 @@ def update_formation_by_category(old_category_name, update_fields):
         update_courses_video_links(
             old_category_name, new_category_name, server_ip, server_port)
 
-    return mongo.db.formations.update_one(
+    mongo.db.formations.update_one(
         {'categoryName': old_category_name},
         {'$set': update_fields}
     )
+    return {
+        "thumbnail":formation_thumbnail_link,
+        "introVideo":formation_intro_video_link
+    }
 
 
 def update_courses_thumbnail_link(old_category_name, new_category_name, server_ip, server_port):

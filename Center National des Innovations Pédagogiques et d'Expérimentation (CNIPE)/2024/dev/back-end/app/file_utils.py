@@ -1,3 +1,4 @@
+from flask import request
 from werkzeug.utils import secure_filename
 import shutil
 import moviepy.editor as mp
@@ -40,6 +41,25 @@ def save_category_thumbnail(category_name, thumbnail_file=None):
         shutil.copy(default_thumbnail_path, thumbnail_path)
 
 
+def save_category_intro_video(category_name, video_file):
+    sanitized_category_name = sanitize_filename(category_name)
+    video_dir = os.path.join(CATEGORIES_DIR, sanitized_category_name)
+
+    video_filename = f"{sanitized_category_name}_introVideo.mp4"
+    video_path = os.path.join(video_dir, video_filename)
+    video_file.save(video_path)
+
+
+def delete_category_intro_video(category_name):
+    sanitized_category_name = sanitize_filename(category_name)
+    video_dir = os.path.join(CATEGORIES_DIR, sanitized_category_name)
+
+    video_filename = f"{sanitized_category_name}_introVideo.mp4"
+    video_path = os.path.join(video_dir, video_filename)
+    if os.path.exists(video_path):
+        os.remove(video_path)
+
+
 def update_category_dir(old_category_name, new_category_name):
     old_sanitized_name = sanitize_filename(old_category_name)
     new_sanitized_name = sanitize_filename(new_category_name)
@@ -48,7 +68,6 @@ def update_category_dir(old_category_name, new_category_name):
     if os.path.exists(old_path):
 
         shutil.move(old_path, new_path)
-        print( " \n\n\n\n nice to meet you \n\n\n")
         # Update the thumbnail
         old_thumbnail_path = os.path.join(
             new_path, f'{old_sanitized_name}_thumbnail.jpg')
@@ -57,8 +76,30 @@ def update_category_dir(old_category_name, new_category_name):
 
         if os.path.exists(old_thumbnail_path):
             shutil.move(old_thumbnail_path, new_thumbnail_path)
+        
+        # Update the introVideo
+        old_intro_video_path = os.path.join(
+            new_path, f'{old_sanitized_name}_introVideo.mp4')
+        new_intro_video_path = os.path.join(
+            new_path, f'{new_sanitized_name}_introVideo.mp4')
+
+        if os.path.exists(old_intro_video_path):
+            shutil.move(old_intro_video_path, new_intro_video_path)
 
 
+def update_category_thumbnail( category_name):
+
+    sanitized_category_name = sanitize_filename(category_name)
+
+    path = os.path.join(CATEGORIES_DIR, sanitized_category_name)
+    if os.path.exists(path):
+        # Update the thumbnail
+        old_thumbnail_path = os.path.join(path, f'{sanitized_category_name}_thumbnail.jpg')
+        new_thumbnail_path = os.path.join(path, f'{sanitized_category_name}_thumbnail.jpg')
+
+        if os.path.exists(old_thumbnail_path):
+            shutil.move(old_thumbnail_path, new_thumbnail_path)
+        
 def delete_category_dir(category_name):
     sanitized_category_name = sanitize_filename(category_name)
     dir_path = os.path.join(CATEGORIES_DIR, sanitized_category_name)
@@ -115,26 +156,24 @@ def update_course_dir(category_name, old_course_name, new_course_name):
         # Update the thumbnail
         old_thumbnail_path = os.path.join(
             new_path, f'{old_sanitized_course_name}_thumbnail.jpg')
-        
+
         new_thumbnail_path = os.path.join(
             new_path, f'{new_sanitized_course_name}_thumbnail.jpg')
-
 
         if os.path.exists(old_thumbnail_path):
             os.rename(old_thumbnail_path, new_thumbnail_path)
 
 
-def update_course_content_dir(category_name,course_name, old_title, new_title):
+def update_course_content_dir(category_name, course_name, old_title, new_title):
     sanitized_category_name = sanitize_filename(category_name)
     sanitized_course_name = sanitize_filename(course_name)
     old_sanitized_title = sanitize_filename(old_title)
     new_sanitized_title = sanitize_filename(new_title)
 
     old_path = os.path.join(
-        CATEGORIES_DIR, sanitized_category_name,sanitized_course_name,'videos', old_sanitized_title)
+        CATEGORIES_DIR, sanitized_category_name, sanitized_course_name, 'videos', old_sanitized_title)
     new_path = os.path.join(
-        CATEGORIES_DIR, sanitized_category_name,sanitized_course_name,'videos',new_sanitized_title)
-    
+        CATEGORIES_DIR, sanitized_category_name, sanitized_course_name, 'videos', new_sanitized_title)
 
     if os.path.exists(old_path):
         os.rename(old_path, new_path)
@@ -210,32 +249,9 @@ def save_video_and_thumbnail(category_name, course_name, title, video_file, thum
     }
 
 
-# def save_video_and_thumbnail(category_name, course_name, title, video_file, thumbnail_file=None):
-#     sanitized_title = sanitize_filename(title)
-#     course_dir = os.path.join(
-#         CATEGORIES_DIR, category_name, course_name, 'videos', sanitized_title)
-#     os.makedirs(course_dir, exist_ok=True)
-
-#     video_filename = f"{sanitized_title}_video.mp4"
-#     video_path = os.path.join(course_dir, video_filename)
-#     video_file.save(video_path)
-
-#     # Calculate video duration
-#     video = mp.VideoFileClip(video_path)
-#     duration = int(video.duration)  # Duration in seconds
-
-#     # Handle thumbnail
-#     if thumbnail_file:
-#         thumbnail_filename = f"{sanitized_title}_thumbnail.jpg"
-#         thumbnail_path = os.path.join(course_dir, thumbnail_filename)
-#         thumbnail_file.save(thumbnail_path)
-#     else:
-#         default_thumbnail_path = os.path.join(
-#             CATEGORIES_DIR, 'default_thumbnail.jpg')
-#         thumbnail_path = os.path.join(
-#             course_dir, f"{sanitized_title}_thumbnail.jpg")
-#         shutil.copy(default_thumbnail_path, thumbnail_path)
-
-#     return {
-#         'duration': duration
-#     }
+def get_intro_video_link(category_name):
+    server_ip = request.host.split(':')[0]
+    server_port = request.host.split(':')[1] if ':' in request.host else '80'
+    video_link = f"http://{server_ip}:{server_port}/formations/{
+        category_name}/introVideo"
+    return video_link

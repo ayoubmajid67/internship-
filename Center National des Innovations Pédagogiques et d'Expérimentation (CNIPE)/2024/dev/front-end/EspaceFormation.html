@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Espace formation</title>
 		<link rel="stylesheet" href="css/style.css" />
-		<link rel="stylesheet" href="css/domain.css">
+		<link rel="stylesheet" href="css/domain.css" />
 		<link rel="stylesheet" href="css/espaceFormation.css" />
 		<link rel="shortcut icon" href="imgs/logo.jpg" type="image/x-icon" />
 
@@ -32,6 +32,42 @@
 		</header>
 
 		<section class="mainContent">
+			<div class="espaceFormation">
+				<div class="mainTitle">Espace Formation</div>
+
+				<div class="searchContainer">
+					<div class="content">
+						<i class="fa-solid fa-magnifying-glass"></i>
+						<input type="text" id="SearchInput" placeholder="Search" />
+					</div>
+				</div>
+
+				<div class="weContainerFormations domainContent">
+					<!-- 1 portfolio 1 -->
+					<!-- <article formationName="portfolio 1" class="card">
+						<div class="controlContainer">
+							<button class="edit">Edit</button>
+							<button class="delete">Delete</button>
+						</div>
+						<img src="imgs/features-01.jpg" type="image/webp" alt="portfolio 1" />
+						<h3>1 - Portfolio 1</h3>
+						<p>My portfolio offers a holistic view of me and my offerings. The 'Home' section connects visitors to my CV and social media, 'About Me' provides background insight, 'Services' and 'Skills' showcase expertise, and 'Contact Me' ensures easy communication—a comprehensive professional identity.</p>
+						<div class="statistiques">
+							<figure class="likesFigure">
+								<img src="imgs/likes.png" alt="like img" />
+								<h5>10</h5>
+							</figure>
+							<figure class="totalVideosFigure">
+								<img src="imgs/videos.png" alt="video img" />
+								<h5>10</h5>
+							</figure>
+						</div>
+						<div class="ProjectResource">
+							<a href="https://youbistamajid.000webhostapp.com" class="WebtiseLink" target="_blank">Consulter</a>
+						</div>
+					</article> -->
+				</div>
+			</div>
 			<!--start features   -->
 			<div class="features" id="features">
 				<div class="mainTitle">Caractéristiques</div>
@@ -66,43 +102,6 @@
 			</div>
 			<div class="spikes"></div>
 			<!--end features   -->
-
-			<div class="espaceFormation">
-				<div class="mainTitle">Espace Formation</div>
-
-				<div class="searchContainer">
-					<div class="content">
-						<i class="fa-solid fa-magnifying-glass"></i>
-						<input type="text" id="SearchInput" placeholder="Search" />
-					</div>
-				</div>
-
-				<div class="weContainerFormations domainContent">
-					<!-- 1 portfolio 1 -->
-					<article formationName="portfolio 1" class="card">
-						<div class="controlContainer">
-							<button class="edit">Edit</button>
-							<button class="delete">Delete</button>
-						</div>
-						<img src="imgs/features-01.jpg" type="image/webp" alt="portfolio 1" />
-						<h3>1 - Portfolio 1</h3>
-						<p>My portfolio offers a holistic view of me and my offerings. The 'Home' section connects visitors to my CV and social media, 'About Me' provides background insight, 'Services' and 'Skills' showcase expertise, and 'Contact Me' ensures easy communication—a comprehensive professional identity.</p>
-						<div class="statistiques">
-							<figure class="likesFigure">
-								<img src="imgs/likes.png" alt="like img" />
-								<h5>10</h5>
-							</figure>
-							<figure class="totalVideosFigure">
-								<img src="imgs/videos.png" alt="video img" />
-								<h5>10</h5>
-							</figure>
-						</div>
-						<div class="ProjectResource">
-							<a href="https://youbistamajid.000webhostapp.com" class="WebtiseLink" target="_blank">Consulter</a>
-						</div>
-					</article>
-				</div>
-			</div>
 		</section>
 
 		<!-- Footer Section -->
@@ -147,14 +146,41 @@
 
 		<div class="blackDrop"></div>
 
-
-		<div id="deleteChatPopup" class="deletePopup popUpBox">
-			<div class="popupContent ">
-				<h2 class="popUpTitle ">Supprimer Formation ?</h2>
-				<p >Cela supprimera  <span class="popUpDomainName ">311R9 PFA.</span></p>
+		<div class="deletePopup popUpBox">
+			<div class="popupContent">
+				<h2 class="popUpTitle">Supprimer Formation ?</h2>
+				<p>Cela supprimera <span class="popUpDomainName">311R9 PFA.</span></p>
 				<div class="popupButtons">
-					<button class="popupButton popupButtonCancel ">Cancel</button>
-					<button class="popupButton popupButtonDelete ">Delete</button>
+					<button class="popupButton popupButtonCancel">Cancel</button>
+					<button class="popupButton popupButtonDelete">Delete</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="addPopup popUpBox">
+			<div class="popupContent">
+				<div class="header">
+					<h2 class="popUpTitle">Ajouter Formation</h2>
+					<button id="closeAddDomainBtn">
+						<i class="fa-solid fa-xmark" onclick="setDisablePopUpBoxMode()"></i>
+					</button>
+				</div>
+				
+
+				<input  class="domainTitleInput" placeholder="category De Formation">
+
+				<textarea class="descriptionInput" placeholder="description de formation" oninput="manageAddFormationDescriptionChange(event)"></textarea>
+				<div class="imgContainer">
+					<div class="content">
+						<h4>Choose a File</h4>
+						<img src="imgs/addPost.svg" alt="add-image" />
+					</div>
+					<input type="file" name="image" accept="image/*" onchange="manageAddDomainImgFileChange(event)" />
+				</div>
+
+				<div class="popupButtons">
+					<button class="popupButton popupButtonCancel">Cancel</button>
+					<button class="popupButton popupButtonAddDomain" onclick="addFormation(event)">Add</button>
 				</div>
 			</div>
 		</div>
@@ -166,3 +192,5 @@
 		<script src="js/espaceFormation.js"></script>
 	</body>
 </html>
+
+<!-- 8QvpTfEZ5A -->

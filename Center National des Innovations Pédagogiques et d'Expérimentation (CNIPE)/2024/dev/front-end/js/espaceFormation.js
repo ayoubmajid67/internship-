@@ -2,7 +2,7 @@ searchInput.addEventListener("input", () => {
 	filterContainers("categoryName");
 });
 
-const webContainer = document.querySelector(".weContainerFormations");
+
 
 async function getHtmlStructure(formation) {
 	let adminContent = "";
@@ -22,7 +22,7 @@ async function getHtmlStructure(formation) {
 	return `
 					<article categoryName=${formation.categoryName} class="card">
 ${adminContent}            
-<div class="imgContainer" >
+			<div class="imgContainer" >
 						<img src=${formation.thumbnail}  type="image/webp" alt="portfolio 1" />
 
 						
@@ -30,8 +30,8 @@ ${adminContent}
                                     <h4 class="categoryName">${formation.categoryName}</h4>
 								</div>
 						</div>
-						<h3>${formation.categoryName}</h3>
-						<p>${formation.description}</p>
+						<h3 class="domainName">${formation.categoryName}</h3>
+						<p class="description">${formation.description}</p>
 						<div class="statistiques">
 							<figure class="likesFigure">
 								<img src="imgs/likes.png" alt="like img" />
@@ -106,30 +106,6 @@ document.addEventListener("click", function (event) {
 	}
 });
 
-async function manageEditCard(event) {
-	const editBtn = event.target;
-	const targetCard = editBtn.parentElement.parentElement;
-
-	switchBtnHandler(editBtn, "cancel", "cancel", "cancelEditCard(event)");
-	const deleteBtn = targetCard.querySelector("button.delete");
-
-	switchBtnHandler(deleteBtn, "save", "save", "manageSaveEditCard(event)");
-}
-
-function cancelEditCard(event) {
-	const cancelBtn = event.target;
-	const targetCard = cancelBtn.parentElement.parentElement;
-
-	switchBtnHandler(cancelBtn, "edit", "edit", "manageEditCard(event)");
-	const saveEditBtn = targetCard.querySelector("button.save");
-
-	switchBtnHandler(saveEditBtn, "delete", "delete", "manageDeleteCard(event)");
-}
-async function manageSaveEditCard(event) {
-	const saveEditBtn = event.target;
-	switchBtnHandler(saveEditBtn, "delete", "delete", "manageDeleteCard(event)");
-}
-
 async function deleteFormationResponse(categoryName) {
 	try {
 		if (!isLogin()) {
@@ -170,7 +146,6 @@ async function manageDeleteCard(event) {
 deletePopUpBtn.addEventListener("click", async function () {
 	let categoryName = deletePopUpBox.getAttribute("categoryName");
 	try {
-	
 		if (categoryName) {
 			let message = await deleteFormationResponse(categoryName);
 			let targetCard = webContainer.querySelector(".card.deleteStatus");
@@ -182,6 +157,4 @@ deletePopUpBtn.addEventListener("click", async function () {
 		setDisablePopUpBoxMode();
 		alertHint(error.message, error.type);
 	}
-
-	
 });

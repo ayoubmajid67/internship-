@@ -40,5 +40,7 @@ def are_all_strings(*args):
     return all(isinstance(arg, str) for arg in args)
 
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config["ALLOWED_EXTENSIONS"]
+def allowed_file_img(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config["ALLOWED_IMG_EXTENSIONS"]
+def allowed_file_video(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config["ALLOWED_VIDEO_EXTENSIONS"]

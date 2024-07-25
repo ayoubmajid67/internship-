@@ -3,8 +3,9 @@
     align-items: center;
     justify-content: center;
 }
-html{
-scroll-behavior: unset;
+
+html {
+    scroll-behavior: unset;
 }
 
 .addCategoryContainer {
@@ -66,7 +67,7 @@ scroll-behavior: unset;
 
 }
 
-@media (max-width : 992px) {
+@media (max-width : 1200px) {
 
     .domainContent {
         justify-content: center;
@@ -87,15 +88,24 @@ scroll-behavior: unset;
 
     border-radius: 0px 0px 12px 12px;
     margin-bottom: 4px;
-transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
 
     scale: 0.9;
 }
-.domainContent.deleteStatus .card {
-    
-    transform:  translateY(-5px); 
 
+.domainContent.deleteStatus .card {
+
+    transform: translateY(-5px);
+
+}
+
+.domainContent .card:not(.editStat) {
+    max-height: 520px;
+}
+
+.domainContent .card:not(.editStat) .imgContainer {
+    flex-grow: 1;
 }
 
 
@@ -109,8 +119,9 @@ transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     align-items: center;
 
 }
+
 .card.deleteStatus .controlContainer {
-background-color: var(--primaryColor);
+    background-color: var(--primaryColor);
 
 }
 
@@ -137,15 +148,18 @@ background-color: var(--primaryColor);
 
 }
 
+.controlContainer button.save:disabled {
+    background: var(--sectionBg);
+    opacity: 0.8;
+}
+
+
+
 .controlContainer button.delete {
     background: var(--primaryColor);
 }
 
-.domainContent img {
-    margin-top: -5px;
-    width: 100%;
-    height: 220px;
-}
+
 
 
 .card h3 {
@@ -175,12 +189,62 @@ background-color: var(--primaryColor);
 
 .card .imgContainer {
     margin-top: -5px;
+    height: 220px;
 
     position: relative;
     overflow: hidden;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
 }
 
-.card .imgContainer::before {
+.imgContainer .content,
+.imgContainer input[type="file"],
+.domainContent img {
+    margin-top: -5px;
+    width: 100%;
+    height: 220px;
+}
+
+
+.imgContainer .content {
+    user-select: none;
+    text-align: center;
+    padding: 20px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border-left: 1px solid rgba(0, 0, 0, 0.261);
+    border-right: 1px solid rgba(0, 0, 0, 0.261);
+}
+
+.imgContainer .content h4 {
+
+    color: var(--primaryColor);
+}
+
+.imgContainer .content img {
+    width: 100px;
+    height: 100px;
+
+}
+
+.imgContainer input[type="file"] {
+    top: 0;
+    left: 0;
+    padding: 20px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+
+}
+
+.card:not(.editStat) .imgContainer::before {
     content: "";
     position: absolute;
     width: 100%;
@@ -195,7 +259,7 @@ background-color: var(--primaryColor);
     transition: 0.4s;
 }
 
-.card .imgContainer:hover::before {
+.card:not(.editStat) .imgContainer:hover::before {
     background-color: rgba(0, 0, 0, 0.535);
     backdrop-filter: blur(1.7px);
 }
@@ -264,6 +328,7 @@ background-color: var(--primaryColor);
 .blackDrop.activeBox {
 
     display: block;
+    z-index: 9;
 }
 
 
@@ -279,18 +344,21 @@ background-color: var(--primaryColor);
     z-index: 555;
 
     transition: opacity 0.3s ease-in-out;
-    top: 45%;
+    top: 50%;
 
-    left: calc(50% + 70px);
-
+    left: 50%;
+    width: 400px;
+    max-width: 90%;
 
     transform: translate(-50%, -50%);
-    z-index: 2;
+    z-index: 20;
     border-radius: 12px;
 
-    display: none;
 
+    display: none;
 }
+
+
 
 
 
@@ -304,8 +372,9 @@ background-color: var(--primaryColor);
 
 .popUpBox .popupContent {
     /* Styles for the content area of the popup */
-    max-width: 400px;
-    min-width: 350px;
+
+
+    overflow: hidden;
     margin: auto;
     text-align: center;
     display: flex;
@@ -342,4 +411,64 @@ background-color: var(--primaryColor);
 .popUpBox .popupButtonDelete {
     /* Styles for the "Delete" button */
     background-color: #f00;
+}
+
+.popUpBox .imgContainer {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background-size: contain;
+
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.popUpBox textarea,
+.card textarea,
+.card input,
+.popUpBox input {
+    padding: 20px 10px;
+    width: 100%;
+    box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.141);
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+}
+.addPopup textarea{
+    max-height: 100px;
+}
+
+.addPopup .popupButtonAddDomain {
+    background-color: var(--primaryColor);
+}
+.addPopup .popupButtonAddDomain:disabled{
+    background-color: rgba(0, 0, 0, 0.692);
+    opacity: 0.9;
+    cursor: not-allowed;
+}
+
+#closeAddDomainBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+
+}
+
+#closeAddDomainBtn i {
+    font-size: 20px;
+    padding: 12px;
+    cursor: pointer;
+
+}
+
+.popUpBox .header {
+    margin-bottom: 15px;
+}
+
+.popUpBox .imgContainer {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
